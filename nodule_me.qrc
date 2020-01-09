@@ -1,8 +1,0 @@
-<RCC>
-  <qresource prefix="/">
-    <file>ui/eraser.png</file>
-    <file>ui/pen.png</file>
-    <file>ui/tube.png</file>
-    <file>ui/pinset.png</file>
-  </qresource>
-</RCC>
