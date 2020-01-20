@@ -17,7 +17,7 @@ class InfolabelModel:
         return " [PEN] LEFT click : add points. | RIGHT click: Connect point of start and end."
 
     def get_text_in_pen_labelings():
-        return " [PEN] LEFT click : add points. | RIGHT click: Complete labeling nodule."
+        return " [PEN] LEFT click : add points."
 
     def get_text_in_pinset():
         return " [PINSET] LEFT drag : move point highlghted."

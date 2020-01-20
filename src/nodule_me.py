@@ -1,4 +1,4 @@
-# pyinstaller main_noduleme.py --onefile --noconsole --icon=nodule_me.ico
+# pyinstaller nodule_me.py --onefile --noconsole --icon=nodule_me.ico
 # pyuic5 ui_noduleme.ui -o ui_noduleme.py
 # pyuic5 ui_label.ui -o ui_label.py
 # pyuic5 ui_pen.ui -o ui_pen.py
@@ -13,8 +13,6 @@ import pydicom
 import cv2
 import numpy as np
 from qt_designer.ui_noduleme import *
-from qt_designer.ui_label import *
-from qt_designer.ui_pen import *
 from qt_designer.ui_hello import *
 from handler.handler import Handler
 from handler.view_handler import ViewHander
@@ -77,13 +75,31 @@ class MyForm(QWidget):
         Handler.set_button_tube(self.ui.buttonTube)
         Handler.set_combo_box_user(self.ui.comboBoxUser)
         Handler.set_label_info(self.ui.labelInfo)
+        # LABEL TAB系
+        self.group = QButtonGroup()
+        self.group.addButton(self.ui.radioButton1,1)
+        self.group.addButton(self.ui.radioButton2,2)
+        self.group.addButton(self.ui.radioButton3,3)
+        self.group.addButton(self.ui.radioButton4,4)
+        self.group.addButton(self.ui.radioButton5,5)
+        Handler.set_radio_buttons_writting([
+            self.ui.radioButton1,
+            self.ui.radioButton2,
+            self.ui.radioButton3,
+            self.ui.radioButton4,
+            self.ui.radioButton5,
+            ])
+        Handler.set_text_edit_comments_writting(self.ui.textEditCommentsWritting)
+        Handler.set_combo_box_nodule_id_writting(self.ui.comboBoxNoduleIdWritting)
+        Handler.set_button_ok_writting(self.ui.buttonOkWritting)
+        Handler.set_table_widget_writting(self.ui.tableWidgetWritting)
+        Handler.set_button_delete_writting(self.ui.buttonDeleteWritting)
+        Handler.set_widget_writting(self.ui.widgetWritting)
         ViewHander.initialize()
         print("== Handler set complete! ==")
 
         cv2.destroyAllWindows()
 
-        Handler.set_label_dialog(LabelDialog(self))
-        Handler.set_pen_dialog(PenDialog(self))
         Handler.set_hello_dialog(HelloDialog(self))
         Handler.set_message_dialog(MessageDialog(self))
 
@@ -96,44 +112,6 @@ class MyForm(QWidget):
             ViewHander.resize_window()
             Handler.resize_window()
 
-
-# ラベ登録時のダイアログ
-class LabelDialog(QDialog):
-
-    def __init__(self, parent=None):
-        QtWidgets.QDialog.__init__(self, parent)
-        self.ui = Ui_LabelDialog()
-        self.ui.setupUi(self)
-
-        self.group = QButtonGroup()
-        self.group.addButton(self.ui.radioButton1,1)
-        self.group.addButton(self.ui.radioButton2,2)
-        self.group.addButton(self.ui.radioButton3,3)
-        self.group.addButton(self.ui.radioButton4,4)
-        self.group.addButton(self.ui.radioButton5,5)
-        Handler.set_radio_buttons_label_dialog([
-            self.ui.radioButton1,
-            self.ui.radioButton2,
-            self.ui.radioButton3,
-            self.ui.radioButton4,
-            self.ui.radioButton5,
-            ])
-        Handler.set_text_edit_comments_dialog(self.ui.textEditComments)
-        Handler.set_combo_box_nodule_id_dialog(self.ui.comboBoxNoduleId)
-        Handler.set_button_ok_label_dialog(self.ui.buttonOk)
-        Handler.set_button_cancel_label_dialog(self.ui.buttonCancel)
-
-    def show(self):
-        self.exec_()
-
-class PenDialog(QDialog):
-
-    def __init__(self, parent=None):
-        QtWidgets.QDialog.__init__(self, parent)
-        self.ui = Ui_PenDialog()
-        self.ui.setupUi(self)
-
-        Handler.set_label_pen_dialog(self.ui.labelPenDialog)
 
 class HelloDialog(QDialog):
 

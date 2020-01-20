@@ -16,6 +16,10 @@
   <property name="windowTitle">
    <string>Hello nodule_me!</string>
   </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>../nodule_me.ico</normaloff>../nodule_me.ico</iconset>
+  </property>
   <widget class="QPushButton" name="buttonStartHello">
    <property name="geometry">
     <rect>

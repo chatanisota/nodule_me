@@ -107,7 +107,7 @@ class CanvasController:
     @staticmethod
     def __draw_points_canvas(img):
         tool = ToolModel.get_tool()
-        labels = LabelModel.get_labels_refined_by_index(DicomModel.get_current_index(), UserModel.get_current_user_id())
+        labels = LabelModel.get_labels_refined_by_index_for_display(DicomModel.get_current_index(), UserModel.get_current_user_id())
         label_for_displays = LabelModel.create_labels_for_display(labels,  tool)
         for label_for_display in label_for_displays:
             label_for_display.set_calculated_points(np.apply_along_axis(lambda xy: MapModel.image_pos_to_canvas_pos(xy), 1, label_for_display.get_points()))

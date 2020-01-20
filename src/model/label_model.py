@@ -18,7 +18,8 @@ class LabelModel:
     __labels = []
     __nodules = []
     __cursor_point = None       # カーソル（マウス）の場所を示す点
-    __current_select_label = None # テーブルで選択されているラベル
+    __current_selected_table_label = None # ラベルテーブルで選択されているラベル
+    __current_selected_table_writting = None # 書きかけ中のテーブルで選択されているラベル
     __approach_refpoint = None  # 最も接近しているラベルのポイント
     __dragging_refpoint = None  # ドラッグしているラベルのポイント
     __insert_refpoint = None    # 新たに挿入されるであろうポイントの一つ前のポイント
@@ -59,6 +60,17 @@ class LabelModel:
             labels.extend([LabelModel.__writting_label])
         return labels
 
+    @staticmethod
+    def get_labels_saved():
+        return LabelModel.__labels
+
+    @staticmethod
+    def get_labels_writting():
+        labels = copy(LabelModel.__writting_labels)
+        if LabelModel.is_writting_label():
+            labels.extend([LabelModel.__writting_label])
+        return labels
+
     # ソロインデックス／オールインデックスで絞り込み
     @staticmethod
     def __refine_solo_labels(labels, current_index):
@@ -84,9 +96,23 @@ class LabelModel:
             labels = temp_labels
         return labels
 
+    # ラベルテーブル一覧に表示する用
+    @staticmethod
+    def get_labels_refined_all_for_label_tables(current_index, current_user_id):
+        labels = LabelModel.get_labels_saved()
+        labels = LabelModel.__refine_solo_labels(labels, current_index)
+        labels = LabelModel.__refine_my_labels(labels, current_user_id)
+        return labels
+
+    # ラベルテーブル一覧に表示する用
+    @staticmethod
+    def get_labels_all_for_writting():
+        labels = LabelModel.get_labels_writting()
+        return labels
+
     # 画面に描画する用
     @staticmethod
-    def get_labels_refined_all(current_index, current_user_id):
+    def get_labels_refined_all_for_display(current_index, current_user_id):
         labels = LabelModel.get_labels_all()
         labels = LabelModel.__refine_solo_labels(labels, current_index)
         labels = LabelModel.__refine_my_labels(labels, current_user_id)
@@ -94,10 +120,11 @@ class LabelModel:
 
     # 画面に描画する用
     @staticmethod
-    def get_labels_refined_by_index(current_index, current_user_id):
+    def get_labels_refined_by_index_for_display(current_index, current_user_id):
         labels = LabelModel.get_labels_by_index(current_index)
         labels = LabelModel.__refine_my_labels(labels, current_user_id)
         return labels
+
 
     # 表示のみに一時的に利用するラベル
     @staticmethod
@@ -209,12 +236,20 @@ class LabelModel:
         return None
 
     @staticmethod
-    def set_current_selected_label(label):
-        LabelModel.__current_select_label = label
+    def set_current_selected_table_label(label):
+        LabelModel.__current_selected_table_label = label
 
     @staticmethod
-    def get_current_selected_label():
-        return LabelModel.__current_select_label
+    def get_current_selected_table_label():
+        return LabelModel.__current_selected_table_label
+
+    @staticmethod
+    def set_current_selected_table_writting(label):
+        LabelModel.__current_selected_table_writting = label
+
+    @staticmethod
+    def get_current_selected_table_writting():
+        return LabelModel.__current_selected_table_writting
 
     @staticmethod
     def reset_cursor_point():
@@ -340,26 +375,34 @@ class LabelModel:
         LabelModel.refpoint_reset()
 
     @staticmethod
-    def delete_current_select_label():
+    def delete_current_selected_table_label():
 
-        if(LabelModel.__current_select_label == None):
+        if(LabelModel.__current_selected_table_label == None):
             return None
 
         if(len(LabelModel.__labels)>0):
             temp_label = copy(LabelModel.__labels)
             for i in range(len(LabelModel.__labels)):
-                if(LabelModel.__labels[i] is LabelModel.__current_select_label):
+                if(LabelModel.__labels[i] is LabelModel.__current_selected_table_label):
                     temp_label.pop(i)
             LabelModel.__labels = temp_label
+
+        LabelModel.refpoint_reset()
+
+    @staticmethod
+    def delete_current_selected_table_writting():
+
+        if(LabelModel.__current_selected_table_writting == None):
+            return None
 
         if(len(LabelModel.__writting_labels)>0):
             temp_label = copy(LabelModel.__writting_labels)
             for i in range(len(LabelModel.__writting_labels)):
-                if(LabelModel.__writting_labels[i] is LabelModel.__current_select_label):
+                if(LabelModel.__writting_labels[i] is LabelModel.__current_selected_table_writting):
                     temp_label.pop(i)
             LabelModel.__writting_labels = temp_label
 
-        if(LabelModel.__writting_label is LabelModel.__current_select_label):
+        if(LabelModel.__writting_label is LabelModel.__current_selected_table_writting):
             LabelModel.__writting_label = None
         LabelModel.refpoint_reset()
 

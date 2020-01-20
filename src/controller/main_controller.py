@@ -9,8 +9,8 @@ class MainController:
 
     @staticmethod
     def appear_main_dialog():
-        MainController.__main_dialog.setVisible(True)
+        MainController.__main_dialog.showMaximized()
 
     @staticmethod
     def hide_main_dialog():
-        MainController.__main_dialog.hide()
+        MainController.__main_dialog.showMinimized()

@@ -133,6 +133,21 @@ class Handler():
         ui.clicked.connect(Handler.clicked_button_delete_label)
         LabelController.set_button_delete_label(ui)
 
+    @staticmethod
+    def set_table_widget_writting(ui):
+        ui.itemClicked.connect(Handler.itemClicked_table_widget_writting)
+        ui.itemSelectionChanged.connect(Handler.itemSelectionChanged_table_widget_writting)
+        LabelController.set_table_widget_writting(ui)
+
+    @staticmethod
+    def set_button_delete_writting(ui):
+        ui.clicked.connect(Handler.clicked_button_delete_writting)
+        LabelController.set_button_delete_writting(ui)
+
+    @staticmethod
+    def set_widget_writting(ui):
+        LabelController.set_widget_writting(ui)
+
     #ツールバー
     @staticmethod
     def set_button_pen(ui):
@@ -159,30 +174,21 @@ class Handler():
     def set_label_info(ui):
         InfolabelController.set_label_info(ui)
 
-    # ラベルのダイアログ
     @staticmethod
-    def set_label_dialog(ui):
-        LabelController.set_label_dialog(ui)
-
-    @staticmethod
-    def set_text_edit_comments_dialog(ui):
+    def set_text_edit_comments_writting(ui):
         LabelController.set_text_edit_comments(ui)
 
     @staticmethod
-    def set_radio_buttons_label_dialog(uis):
+    def set_radio_buttons_writting(uis):
         LabelController.set_radio_buttons(uis)
 
     @staticmethod
-    def set_combo_box_nodule_id_dialog(ui):
+    def set_combo_box_nodule_id_writting(ui):
         LabelController.set_combo_box_nodule_id(ui)
 
     @staticmethod
-    def set_button_ok_label_dialog(ui):
-        ui.clicked.connect(Handler.clicked_button_ok_label_dialog)
-
-    @staticmethod
-    def set_button_cancel_label_dialog(ui):
-        ui.clicked.connect(Handler.clicked_button_cancel_label_dialog)
+    def set_button_ok_writting(ui):
+        ui.clicked.connect(Handler.clicked_button_ok_writting)
 
     # 最初のダイアログ
     @staticmethod
@@ -197,14 +203,6 @@ class Handler():
     def set_button_start_hello(ui):
         ui.clicked.connect(Handler.clicked_button_start_hello)
 
-    # ペンのダイアログ
-    @staticmethod
-    def set_pen_dialog(ui):
-        LabelController.set_pen_dialog(ui)
-
-    @staticmethod
-    def set_label_pen_dialog(ui):
-        LabelController.set_label_pen_dialog(ui)
 
     # メッセージダイアログ
     @staticmethod
@@ -354,9 +352,6 @@ class Handler():
         if(LabelController.is_writting_label()):
             # ポイント付けの終了
             LabelController.pen_end()
-        elif(LabelController.is_writting_labels()):
-            # 一つの結節にたいするラベリングの終了
-            LabelController.open_label_dialog()
         Handler.__repaint_from_label()
 
     @staticmethod
@@ -390,14 +385,9 @@ class Handler():
         Handler.__repaint_from_zoom()
 
     @staticmethod
-    def clicked_button_ok_label_dialog():
-        LabelController.label_dialog_ok()
+    def clicked_button_ok_writting():
+        LabelController.regist_writting_labels()
         Handler.__repaint_from_corsor()
-
-    @staticmethod
-    def clicked_button_cancel_label_dialog():
-        LabelController.label_dialog_cancel()
-        Handler.__repaint_from_zoom()
 
     # ラベル関係
     @staticmethod
@@ -417,7 +407,7 @@ class Handler():
             MessageDialogController.open("You are labeling in this slice now.\n Please finish them after you change label.")
         else:
             Handler.__repaint_from_label()
-            LabelController.move_to_current_label()
+            LabelController.move_to_current_table_label()
             Handler.__repaint_from_image()
 
     @staticmethod
@@ -432,7 +422,27 @@ class Handler():
 
     @staticmethod
     def clicked_button_delete_label():
-        LabelController.delete_current_select_label()
+        LabelController.delete_current_table_label()
+        Handler.__repaint_from_label()
+
+    @staticmethod
+    def itemClicked_table_widget_writting(index):
+        print("clicked")
+        print(index)
+
+    @staticmethod
+    def itemSelectionChanged_table_widget_writting():
+        if(LabelController.is_writting_label()):
+            #ラベリング中
+            MessageDialogController.open("You are labeling in this slice now.\n Please finish them after you change label.")
+        else:
+            Handler.__repaint_from_label()
+            LabelController.move_to_current_table_writting()
+            Handler.__repaint_from_image()
+
+    @staticmethod
+    def clicked_button_delete_writting():
+        LabelController.delete_current_table_writting()
         Handler.__repaint_from_label()
 
     #ツール関係
@@ -481,7 +491,6 @@ class Handler():
         MapController.update_from_zoom()
         ToolController.update_tool()
         LabelController.update_table_widget_labels()
-        LabelController.update_pen_dialog()
         InfolabelController.update_infolabel()
         IndexController.update_index()
 
@@ -492,7 +501,6 @@ class Handler():
         CanvasController.update_from_zoom()
         MapController.update_from_zoom()
         LabelController.update_table_widget_labels()
-        LabelController.update_pen_dialog()
         InfolabelController.update_infolabel()
 
     @staticmethod
@@ -500,7 +508,6 @@ class Handler():
         CanvasController.update_from_zoom()
         MapController.update_from_zoom()
         LabelController.update_table_widget_labels()
-        LabelController.update_pen_dialog()
         InfolabelController.update_infolabel()
 
     @staticmethod
@@ -508,7 +515,6 @@ class Handler():
         CanvasController.update_from_maker()
         MapController.update_from_maker()
         LabelController.update_table_widget_labels()
-        LabelController.update_pen_dialog()
         InfolabelController.update_infolabel()
 
     @staticmethod

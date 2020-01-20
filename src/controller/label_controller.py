@@ -13,7 +13,7 @@ from classes.label import Label
 
 class LabelController:
 
-    __label_dialog = None
+
     __text_edit_comments = None
     __radio_buttons = None
     __table_widget_labels = None
@@ -22,14 +22,11 @@ class LabelController:
     __button_switch_solo_all = None
     __button_switch_my_everyone = None
     __button_delete_label = None
-    # ペン関連
-    __pen_dialog = None
-    __label_pen_dialog = None
+    # 書き込み中タブ
+    __widget_writting = None
+    __table_widget_writting = None
+    __button_delete_writting = None
 
-
-    @staticmethod
-    def set_label_dialog(ui):
-        LabelController.__label_dialog = ui
 
     @staticmethod
     def set_text_edit_comments(ui):
@@ -69,13 +66,22 @@ class LabelController:
         header.setSectionResizeMode(4, QHeaderView.Stretch)
 
     @staticmethod
-    def set_pen_dialog(ui):
-        LabelController.__pen_dialog = ui
-        LabelController.__pen_dialog.setWindowFlags(Qt.Window | Qt.CustomizeWindowHint | Qt.WindowTitleHint)
+    def set_button_delete_writting(ui):
+        LabelController.__button_delete_writting = ui
 
     @staticmethod
-    def set_label_pen_dialog(ui):
-        LabelController.__label_pen_dialog = ui
+    def set_table_widget_writting(ui):
+        LabelController.__table_widget_writting = ui
+        LabelController.__table_widget_writting.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        LabelController.__table_widget_writting.setSelectionBehavior(QAbstractItemView.SelectRows)
+        LabelController.__table_widget_writting.setSelectionMode(QAbstractItemView.SingleSelection)
+        header = LabelController.__table_widget_writting.horizontalHeader()
+        header.setSectionResizeMode(0, QHeaderView.Stretch)
+
+    @staticmethod
+    def set_widget_writting(ui):
+        LabelController.__widget_writting = ui
+
 
     # --------------------------------------------------------------
 
@@ -149,70 +155,10 @@ class LabelController:
     def is_writting_labels():
         return LabelModel.is_writting_labels()
 
-
-
     @staticmethod
-    def open_label_dialog():
-        LabelController.__combo_box_nodule_id.clear()
-        LabelController.__combo_box_nodule_id.addItem("New nodule")
-        LabelController.__combo_box_nodule_id.addItems(["add label into nodule id :" + str(s) for s in LabelModel.get_nodule_id_list()])
-        LabelController.__show_label_dialog()
-
-    @staticmethod
-    def label_dialog_ok():
+    def regist_writting_labels():
         LabelModel.regist_writting_labels(LabelController.__get_nodule_id(), LabelController.__get_malignant_level(), LabelController.__get_comments(), UserModel.get_current_user_id())
-        LabelController.__label_dialog.accept() #ダイアログを閉じる
         LabelController.update_table_widget_labels()
-
-    @staticmethod
-    def label_dialog_cancel():
-        LabelController.__close_label_dialog()
-
-    @staticmethod
-    def pen_add_cancel():
-        LabelModel.reset_writting_label()
-
-    @staticmethod
-    def pen_regist_cancel():
-        LabelModel.reset_writting_labels()
-
-    @staticmethod
-    def update_pen_dialog():
-        if(LabelModel.is_writting_labels() or LabelModel.is_writting_label()):
-            LabelController.__show_pen_dialog()
-            LabelController.__update_label_pen_dialog()
-        else:
-            LabelController.__close_pen_dialog()
-
-    @staticmethod
-    def __update_label_pen_dialog():
-        labeling_num = LabelModel.get_writting_labels_num()
-        if(labeling_num <= 0):
-            text = "first"
-        else:
-            text = str(labeling_num)
-        LabelController.__label_pen_dialog.setText(text)
-
-    @staticmethod
-    def __show_label_dialog():
-        if(not LabelController.__label_dialog.isVisible()):
-            LabelController.__label_dialog.show()
-
-    @staticmethod
-    def __close_label_dialog():
-        if(LabelController.__label_dialog.isVisible()):
-            LabelController.__label_dialog.accept()
-
-    @staticmethod
-    def __show_pen_dialog():
-        if(not LabelController.__pen_dialog.isVisible()):
-            LabelController.__pen_dialog.move(0,0)
-            LabelController.__pen_dialog.show()
-
-    @staticmethod
-    def __close_pen_dialog():
-        if(LabelController.__pen_dialog.isVisible()):
-            LabelController.__pen_dialog.accept()
 
     @staticmethod
     def switch_solo_all():
@@ -225,8 +171,20 @@ class LabelController:
 
     #テーブルの選択行が移動したとき
     @staticmethod
-    def move_to_current_label():
-        label = LabelModel.get_current_selected_label()
+    def move_to_current_table_label():
+        label = LabelModel.get_current_selected_table_label()
+        if(not label == None):
+            DicomModel.set_current_index(label.get_index())
+            MapModel.move_area(
+                label.get_center_point(),
+                ViewModel.get_canvas_window_size(),
+                ImageModel.get_array_pixel_color().shape
+            )
+
+    #テーブルの選択行が移動したとき
+    @staticmethod
+    def move_to_current_table_writting():
+        label = LabelModel.get_current_selected_table_writting()
         if(not label == None):
             DicomModel.set_current_index(label.get_index())
             MapModel.move_area(
@@ -237,9 +195,15 @@ class LabelController:
 
     # Deleteボタンを押したとき
     @staticmethod
-    def delete_current_select_label():
-        LabelModel.delete_current_select_label()
-        LabelModel.set_current_selected_label(None)
+    def delete_current_table_label():
+        LabelModel.delete_current_selected_table_label()
+        LabelModel.set_current_selected_table_label(None)
+
+    # Deleteボタンを押したとき
+    @staticmethod
+    def delete_current_table_writting():
+        LabelModel.delete_current_selected_table_writting()
+        LabelModel.set_current_selected_table_writting(None)
 
     @staticmethod
     def __get_malignant_level():
@@ -267,7 +231,7 @@ class LabelController:
     @staticmethod
     def update_table_widget_labels():
         # テーブル全体
-        labels = LabelModel.get_labels_refined_all(DicomModel.get_current_index(), UserModel.get_current_user_id())
+        labels = LabelModel.get_labels_refined_all_for_label_tables(DicomModel.get_current_index(), UserModel.get_current_user_id())
         LabelController.__table_widget_labels.blockSignals(True)
         if(len(labels)>0):
 
@@ -302,15 +266,51 @@ class LabelController:
             #ラベルが選択されている
             row = current_items[0].row()
             # id = int(LabelController.__table_widget_labels.item(row, 0).text()) #id取得
-            labels = LabelModel.get_labels_refined_all(DicomModel.get_current_index(), UserModel.get_current_user_id())
             label = labels[row]
-            LabelModel.set_current_selected_label(label)
+            LabelModel.set_current_selected_table_label(label)
         else:
             #何も選択されていない
-            LabelModel.set_current_selected_label(None)
+            LabelModel.set_current_selected_table_label(None)
 
-        if(LabelModel.get_current_selected_label() == None):
+        if(LabelModel.get_current_selected_table_label() == None):
             LabelController.__button_delete_label.setVisible(False)
         else:
             LabelController.__button_delete_label.setVisible(True)
         LabelController.__table_widget_labels.blockSignals(False)
+
+        # 書き込み中タブ
+        LabelController.__combo_box_nodule_id.clear()
+        LabelController.__combo_box_nodule_id.addItem("New nodule")
+        LabelController.__combo_box_nodule_id.addItems(["add label into nodule id :" + str(s) for s in LabelModel.get_nodule_id_list()])
+
+        labels = LabelModel.get_labels_all_for_writting()
+        LabelController.__table_widget_writting.blockSignals(True)
+        if(len(labels)>0):
+            LabelController.__table_widget_writting.setRowCount(len(labels))
+            for r, label in enumerate(labels):
+                LabelController.__table_widget_writting.setItem(r, 0, QTableWidgetItem(str(label.get_index())))
+        else:
+            LabelController.__table_widget_writting.setRowCount(0)
+
+        # 選択部分
+        current_items = LabelController.__table_widget_writting.selectedItems()
+        if(len(current_items)>0):
+            #ラベルが選択されている
+            row = current_items[0].row()
+            label = labels[row]
+            LabelModel.set_current_selected_table_writting(label)
+        else:
+            #何も選択されていない
+            LabelModel.set_current_selected_table_writting(None)
+
+        if(LabelModel.get_current_selected_table_writting() == None):
+            LabelController.__button_delete_writting.setVisible(False)
+        else:
+            LabelController.__button_delete_writting.setVisible(True)
+        LabelController.__table_widget_writting.blockSignals(False)
+
+        # 書き込み中タブのサイズ
+        if(LabelModel.is_writting_label() or LabelModel.is_writting_labels()):
+            LabelController.__widget_writting.setMinimumSize(200,0)
+        else:
+            LabelController.__widget_writting.setMinimumSize(0,0)
