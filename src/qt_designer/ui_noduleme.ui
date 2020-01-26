@@ -124,6 +124,27 @@
          <property name="spacing">
           <number>5</number>
          </property>
+         <item row="0" column="0">
+          <widget class="QToolButton" name="buttonPen">
+           <property name="minimumSize">
+            <size>
+             <width>30</width>
+             <height>30</height>
+            </size>
+           </property>
+           <property name="toolTip">
+            <string>add points of label by click.
+ you can end by right ckick.</string>
+           </property>
+           <property name="text">
+            <string>+</string>
+           </property>
+           <property name="icon">
+            <iconset>
+             <normaloff>ui/pen.png</normaloff>ui/pen.png</iconset>
+           </property>
+          </widget>
+         </item>
          <item row="3" column="0">
           <widget class="QPushButton" name="buttonTube">
            <property name="sizePolicy">
@@ -144,12 +165,48 @@
              <height>30</height>
             </size>
            </property>
+           <property name="toolTip">
+            <string>insert a point of label between points by click.</string>
+           </property>
            <property name="text">
             <string/>
            </property>
            <property name="icon">
             <iconset>
              <normaloff>ui/tube.png</normaloff>ui/tube.png</iconset>
+           </property>
+          </widget>
+         </item>
+         <item row="6" column="0">
+          <spacer name="verticalSpacer">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item row="1" column="0">
+          <widget class="QToolButton" name="buttonPinset">
+           <property name="minimumSize">
+            <size>
+             <width>30</width>
+             <height>30</height>
+            </size>
+           </property>
+           <property name="toolTip">
+            <string>move points of label by drag.</string>
+           </property>
+           <property name="text">
+            <string>Ed</string>
+           </property>
+           <property name="icon">
+            <iconset>
+             <normaloff>ui/pinset.png</normaloff>ui/pinset.png</iconset>
            </property>
           </widget>
          </item>
@@ -173,6 +230,9 @@
              <height>30</height>
             </size>
            </property>
+           <property name="toolTip">
+            <string>delete points of label by click.</string>
+           </property>
            <property name="text">
             <string/>
            </property>
@@ -183,49 +243,9 @@
           </widget>
          </item>
          <item row="4" column="0">
-          <spacer name="verticalSpacer">
+          <widget class="Line" name="line_7">
            <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>20</width>
-             <height>40</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item row="1" column="0">
-          <widget class="QToolButton" name="buttonPinset">
-           <property name="minimumSize">
-            <size>
-             <width>30</width>
-             <height>30</height>
-            </size>
-           </property>
-           <property name="text">
-            <string>Ed</string>
-           </property>
-           <property name="icon">
-            <iconset>
-             <normaloff>ui/pinset.png</normaloff>ui/pinset.png</iconset>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="0">
-          <widget class="QToolButton" name="buttonPen">
-           <property name="minimumSize">
-            <size>
-             <width>30</width>
-             <height>30</height>
-            </size>
-           </property>
-           <property name="text">
-            <string>+</string>
-           </property>
-           <property name="icon">
-            <iconset>
-             <normaloff>ui/pen.png</normaloff>ui/pen.png</iconset>
+            <enum>Qt::Horizontal</enum>
            </property>
           </widget>
          </item>
@@ -249,12 +269,15 @@
              <height>30</height>
             </size>
            </property>
+           <property name="toolTip">
+            <string>auto generate label by drag. (snake method)</string>
+           </property>
            <property name="text">
             <string/>
            </property>
            <property name="icon">
             <iconset>
-             <normaloff>../ui/acm_snake.png</normaloff>../ui/acm_snake.png</iconset>
+             <normaloff>ui/acm_snake.png</normaloff>ui/acm_snake.png</iconset>
            </property>
           </widget>
          </item>
@@ -582,6 +605,9 @@
                   <height>30</height>
                  </size>
                 </property>
+                <property name="toolTip">
+                 <string>delete one writting selecting label.</string>
+                </property>
                 <property name="styleSheet">
                  <string notr="true">background-color: rgb(255, 85, 127);</string>
                 </property>
@@ -590,7 +616,7 @@
                 </property>
                 <property name="icon">
                  <iconset>
-                  <normaloff>../ui/trash.png</normaloff>../ui/trash.png</iconset>
+                  <normaloff>ui/trash.png</normaloff>ui/trash.png</iconset>
                 </property>
                </widget>
               </item>
@@ -704,6 +730,9 @@
                  <width>30</width>
                  <height>30</height>
                 </size>
+               </property>
+               <property name="toolTip">
+                <string>set default zoom (*1.0)</string>
                </property>
                <property name="text">
                 <string/>
@@ -1016,6 +1045,9 @@
                  <height>30</height>
                 </size>
                </property>
+               <property name="toolTip">
+                <string>switch [only this z-index view] or [all z-index view]</string>
+               </property>
                <property name="text">
                 <string/>
                </property>
@@ -1028,6 +1060,9 @@
                  <width>30</width>
                  <height>30</height>
                 </size>
+               </property>
+               <property name="toolTip">
+                <string>switch [only your label view] or [everyone label view]</string>
                </property>
                <property name="text">
                 <string/>
@@ -1066,6 +1101,9 @@
                  <width>30</width>
                  <height>30</height>
                 </size>
+               </property>
+               <property name="toolTip">
+                <string>delete one selecting label </string>
                </property>
                <property name="styleSheet">
                 <string notr="true">background-color: rgb(255, 107, 142);</string>
