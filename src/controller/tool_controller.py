@@ -7,6 +7,7 @@ class ToolController:
     __button_pinset = None
     __button_eracer = None
     __button_tube = None
+    __button_snake = None
 
     def set_button_pen(ui):
         ToolController.__button_pen = ui
@@ -20,6 +21,9 @@ class ToolController:
     def set_button_tube(ui):
         ToolController.__button_tube = ui
 
+    def set_button_snake(ui):
+        ToolController.__button_snake = ui
+
     def change_tool(tool):
         ToolModel.change_tool(tool)
 
@@ -29,6 +33,7 @@ class ToolController:
         ToolController.__button_pinset.setEnabled(True)
         ToolController.__button_eracer.setEnabled(True)
         ToolController.__button_tube.setEnabled(True)
+        ToolController.__button_snake.setEnabled(True)
         if(tool == Tool.PEN):
             ToolController.__button_pen.setEnabled(False)
         elif(tool == Tool.PINSET):
@@ -37,6 +42,8 @@ class ToolController:
             ToolController.__button_eracer.setEnabled(False)
         elif(tool == Tool.TUBE):
             ToolController.__button_tube.setEnabled(False)
+        elif(tool == Tool.SNAKE):
+            ToolController.__button_snake.setEnabled(False)
 
     def get_tool():
         return ToolModel.get_tool()

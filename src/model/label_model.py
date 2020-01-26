@@ -262,6 +262,16 @@ class LabelModel:
         LabelModel.__writting_labels.append(LabelModel.__writting_label)
         LabelModel.__writting_label = None
 
+    # ラベル一つ分を登録
+    @staticmethod
+    def regist_writting_label_by_acm(points, label_id, index):
+        LabelModel.__writting_label = Label()
+        LabelModel.__writting_label.set_points(points)
+        LabelModel.__writting_label.set_index(index)
+        LabelModel.__writting_label.regist(label_id, index)
+        LabelModel.__writting_labels.append(LabelModel.__writting_label)
+        LabelModel.__writting_label = None
+
     # 結節一つ分（複数ラベル）を登録、regist_writting_label()の後に行う
     @staticmethod
     def regist_writting_labels(nodule_id, malignant_level, comments, user_id):

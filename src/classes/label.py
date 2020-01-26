@@ -29,6 +29,9 @@ class Label:
     def delete(self, index):
         self.points = np.delete(self.points, index, 0)
 
+    def set_points(self, points):
+        self.points = points
+
     def get_points(self):
         if(len(self.points) <= 0):
             return []

@@ -7,6 +7,7 @@ from model.view_model import ViewModel
 from model.label_model import LabelModel
 from model.tool_model import ToolModel
 from model.user_model import UserModel
+from model.acm_model import ACMModel
 import numpy as np
 from classes.tool import Tool
 from classes.color import Color
@@ -50,6 +51,7 @@ class CanvasController:
         # マーカ系
         #img_array = LabelModel.draw_points_canvas(img_array, MapModel.image_pos_to_canvas_pos, DicomModel.get_current_index(), ToolModel.get_tool())
         img_array = CanvasController.__draw_points_canvas(img_array)
+        img_array = CanvasController.__draw_acm_area(img_array)
         ImageModel.set_array_pixel_canvas_maker(img_array)
         CanvasController.__repaint(img_array)
 
@@ -122,5 +124,18 @@ class CanvasController:
             cursor_point = LabelModel.get_cursor_point()
             calculated_cursor_point = MapModel.image_pos_to_canvas_pos(cursor_point)
             img = LabelModel.draw_cursor(img, calculated_cursor_point)
+
+        return img
+
+    @staticmethod
+    def __draw_acm_area(img):
+        if(not ACMModel.is_selecting()):
+            return img
+
+        img = ACMModel.draw_area(
+            img,
+            MapModel.image_pos_to_canvas_pos(ACMModel.get_start_point()),
+            MapModel.image_pos_to_canvas_pos(ACMModel.get_end_point())
+            )
 
         return img

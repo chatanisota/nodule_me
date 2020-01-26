@@ -73,6 +73,7 @@ class MyForm(QWidget):
         Handler.set_button_pinset(self.ui.buttonPinset)
         Handler.set_button_eracer(self.ui.buttonEracer)
         Handler.set_button_tube(self.ui.buttonTube)
+        Handler.set_button_snake(self.ui.buttonACMSnake)
         Handler.set_combo_box_user(self.ui.comboBoxUser)
         Handler.set_label_info(self.ui.labelInfo)
         # LABEL TAB系

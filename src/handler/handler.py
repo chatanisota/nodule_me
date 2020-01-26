@@ -11,6 +11,7 @@ from controller.infolabel_controller import InfolabelController
 from controller.hello_controller import HelloController
 from controller.main_controller import MainController
 from controller.message_dialog_controller import MessageDialogController
+from controller.acm_controller import ACMController
 from classes.tool import Tool
 
 
@@ -169,6 +170,11 @@ class Handler():
         ui.clicked.connect(Handler.clicked_button_tube)
         ToolController.set_button_tube(ui)
 
+    @staticmethod
+    def set_button_snake(ui):
+        ui.clicked.connect(Handler.clicked_button_snake)
+        ToolController.set_button_snake(ui)
+
     # 下のラベル
     @staticmethod
     def set_label_info(ui):
@@ -315,6 +321,8 @@ class Handler():
             pass
         elif(ToolController.get_tool() == Tool.TUBE):
             pass
+        elif(ToolController.get_tool() == Tool.SNAKE):
+            ACMController.acm_press(x, y)
 
     @staticmethod
     def canvas_mouse_release(x, y):
@@ -326,6 +334,8 @@ class Handler():
             LabelController.eracer_release(x, y)
         elif(ToolController.get_tool() == Tool.TUBE):
             LabelController.tube_add(x, y)
+        elif(ToolController.get_tool() == Tool.SNAKE):
+            ACMController.acm_snake(x, y)
         Handler.__repaint_from_label()
 
     @staticmethod
@@ -338,6 +348,9 @@ class Handler():
             LabelController.eracer_move(x, y)
         elif(ToolController.get_tool() == Tool.TUBE):
             LabelController.tube_move(x, y)
+        elif(ToolController.get_tool() == Tool.SNAKE):
+            pass
+
 
         Handler.__repaint_from_corsor()
 
@@ -345,7 +358,9 @@ class Handler():
     def canvas_mouse_drag(x, y):
         if(ToolController.get_tool() == Tool.PINSET):
             LabelController.pinset_drag(x, y)
-            Handler.__repaint_from_zoom()
+        elif(ToolController.get_tool() == Tool.SNAKE):
+            ACMController.acm_drag(x, y)
+        Handler.__repaint_from_zoom()
 
     @staticmethod
     def canvas_right_mouse_press():
@@ -467,6 +482,12 @@ class Handler():
     @staticmethod
     def clicked_button_tube():
         ToolController.change_tool(Tool.TUBE)
+        ToolController.update_tool()
+        Handler.__repaint_from_corsor()
+
+    @staticmethod
+    def clicked_button_snake():
+        ToolController.change_tool(Tool.SNAKE)
         ToolController.update_tool()
         Handler.__repaint_from_corsor()
 

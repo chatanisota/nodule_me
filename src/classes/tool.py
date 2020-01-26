@@ -5,3 +5,4 @@ class Tool(Enum):
     PINSET = 2
     ERACER = 3
     TUBE = 4
+    SNAKE = 5
