@@ -12,6 +12,7 @@ from controller.hello_controller import HelloController
 from controller.main_controller import MainController
 from controller.message_dialog_controller import MessageDialogController
 from controller.acm_controller import ACMController
+from controller.cashe_controller import CasheController
 from classes.tool import Tool
 
 
@@ -275,7 +276,7 @@ class Handler():
             IndexController.change_slider()
         else:
             MessageDialogController.open("You are labeling in this slice now.\n Please finish them after you change z-index.")
-        Handler.__repaint_from_image()
+        Handler.__repaint_from_index()
 
     @staticmethod
     def valueChanged_spin_index():
@@ -283,7 +284,7 @@ class Handler():
             IndexController.change_spin()
         else:
             MessageDialogController.open("You are labeling in this slice now.\n Please finish them after you change z-index.")
-        Handler.__repaint_from_image()
+        Handler.__repaint_from_index()
 
 
 
@@ -423,7 +424,7 @@ class Handler():
         else:
             Handler.__repaint_from_label()
             LabelController.move_to_current_table_label()
-            Handler.__repaint_from_image()
+            Handler.__repaint_from_index()
 
     @staticmethod
     def clicked_button_switch_solo_all():
@@ -453,7 +454,7 @@ class Handler():
         else:
             Handler.__repaint_from_label()
             LabelController.move_to_current_table_writting()
-            Handler.__repaint_from_image()
+            Handler.__repaint_from_index()
 
     @staticmethod
     def clicked_button_delete_writting():
@@ -502,7 +503,6 @@ class Handler():
         UserController.update_combo_box_user()
         MainController.appear_main_dialog()
 
-
     #private
     @staticmethod
     def __repaint_from_image():
@@ -514,6 +514,19 @@ class Handler():
         LabelController.update_table_widget_labels()
         InfolabelController.update_infolabel()
         IndexController.update_index()
+        CasheController.reset_cashe()
+
+    @staticmethod
+    def __repaint_from_index():
+        ImageController.update_from_image()
+        HistogramController.update_from_image()
+        CanvasController.update_from_zoom()
+        MapController.update_from_zoom()
+        ToolController.update_tool()
+        LabelController.update_table_widget_labels_at_index()
+        InfolabelController.update_infolabel()
+        IndexController.update_index()
+        CasheController.reset_cashe()
 
     @staticmethod
     def __repaint_from_histogram():
@@ -521,15 +534,17 @@ class Handler():
         ImageController.update_from_histogram()
         CanvasController.update_from_zoom()
         MapController.update_from_zoom()
-        LabelController.update_table_widget_labels()
+        # LabelController.update_table_widget_labels()
         InfolabelController.update_infolabel()
+        CasheController.reset_cashe()
 
     @staticmethod
     def __repaint_from_zoom():
         CanvasController.update_from_zoom()
         MapController.update_from_zoom()
-        LabelController.update_table_widget_labels()
+        # LabelController.update_table_widget_labels()
         InfolabelController.update_infolabel()
+        CasheController.reset_cashe()
 
     @staticmethod
     def __repaint_from_label():
@@ -537,9 +552,12 @@ class Handler():
         MapController.update_from_maker()
         LabelController.update_table_widget_labels()
         InfolabelController.update_infolabel()
+        CasheController.reset_cashe()
+
 
     @staticmethod
     def __repaint_from_corsor():
         CanvasController.update_from_maker()
         MapController.update_from_maker()
         InfolabelController.update_infolabel()
+        CasheController.reset_cashe()

@@ -53,9 +53,9 @@ class FileController():
     def save():
         if(not FileModel.is_save_more_than_once()):
             FileModel.select_save_file()
-        FileModel.save_as_json(LabelModel.get_labels_all(), LabelModel.get_nodules_all(), DicomModel.get_dicom_slices())
+        FileModel.save_as_json(LabelModel.get_labels_all(), LabelModel.get_nodules_all(), DicomModel.get_dicom_slices(), DicomModel.get_pixel_spacing(), DicomModel.get_slice_thickness())
 
     @staticmethod
     def save_as_new():
         FileModel.select_save_file()
-        FileModel.save_as_json(LabelModel.get_labels_all(), LabelModel.get_nodules_all(), DicomModel.get_dicom_slices())
+        FileModel.save_as_json(LabelModel.get_labels_all(), LabelModel.get_nodules_all(), DicomModel.get_dicom_slices(), DicomModel.get_pixel_spacing(), DicomModel.get_slice_thickness())

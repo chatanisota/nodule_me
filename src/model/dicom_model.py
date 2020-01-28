@@ -32,6 +32,7 @@ class DicomModel():
         slices.sort(key = lambda x: float(x.ImagePositionPatient[2]))
 
         DicomModel.__dicom_slices  = [s.pixel_array for s in slices]
+        DicomModel.__dicom_head = slices[0]
         DicomModel.__current_index = 0
 
     @staticmethod
@@ -45,6 +46,15 @@ class DicomModel():
     @staticmethod
     def get_current_index():
         return DicomModel.__current_index
+
+    @staticmethod
+    def get_pixel_spacing():
+        pixel_spacing = DicomModel.__dicom_head.PixelSpacing
+        return [float(pixel_spacing[0]),float(pixel_spacing[1])]
+
+    @staticmethod
+    def get_slice_thickness():
+        return DicomModel.__dicom_head.SliceThickness
 
     #出力用
     @staticmethod

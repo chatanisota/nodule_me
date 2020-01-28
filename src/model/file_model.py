@@ -64,15 +64,18 @@ class FileModel:
 
     @staticmethod
     def get_select_open_file_npy():
-        return FileModel.__select_open_file.replace(".json",".npy")
+        root_ext_pair = os.path.splitext(FileModel.__select_open_file)
+        return root_ext_pair[0] + ".npy"
 
     @staticmethod
     def get_select_save_file_json():
-        return FileModel.__select_save_file + ".json"
+        root_ext_pair = os.path.splitext(FileModel.__select_save_file)
+        return root_ext_pair[0] + ".json"
 
     @staticmethod
     def get_select_save_file_npy():
-        return FileModel.__select_save_file + ".npy"
+        root_ext_pair = os.path.splitext(FileModel.__select_save_file)
+        return root_ext_pair[0] + ".npy"
 
 
     @staticmethod
@@ -156,7 +159,7 @@ class FileModel:
     """
 
     @staticmethod
-    def save_as_json(labels, nodules, slices):
+    def save_as_json(labels, nodules, slices, pixel_spacing, slice_thickness):
         ys = cl.OrderedDict()
         nodule_me_json = cl.OrderedDict()
 
@@ -171,6 +174,9 @@ class FileModel:
         nodule_me_json["nodules"] = nodules_json
 
         ys["nodule_me"] = nodule_me_json
+        ys["PixelSpacing"] = pixel_spacing
+        ys["SliceThickness"] = slice_thickness
+        print(ys)
 
         fw = open(FileModel.get_select_save_file_json(),'w')
         json.dump(ys, fw, indent=4)

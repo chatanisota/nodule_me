@@ -69,7 +69,10 @@ class Label:
         json["label_id"] = self.label_id
         json["nodule_id"] = self.nodule_id
         json["index"] = self.index
-        json["points"] = self.get_points().tolist()
+        points = self.get_points()
+        if(len(points)>0):
+            points = points.tolist()
+        json["points"] = points
         return json
 
     #読み込み用
@@ -78,4 +81,3 @@ class Label:
         self.label_id = int(json["label_id"])
         self.nodule_id = int(json["nodule_id"])
         self.index = json["index"]
-        print("paaaan",self.label_id)

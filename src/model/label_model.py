@@ -26,6 +26,10 @@ class LabelModel:
     __writting_label_color = Color.red()
     __is_solo = False           # solo/all
     __is_my = False             # my/everyone
+    # キャッシュ
+    __cashe_label_for_display = None
+    __cashe_labels_refined_all_for_display = None
+    __cashe_labels_refined_by_index_for_display = None
 
     @staticmethod
     def is_writting_label():
@@ -113,22 +117,30 @@ class LabelModel:
     # 画面に描画する用
     @staticmethod
     def get_labels_refined_all_for_display(current_index, current_user_id):
+        if(not LabelModel.__cashe_labels_refined_all_for_display == None):
+            return LabelModel.__cashe_labels_refined_all_for_display
         labels = LabelModel.get_labels_all()
         labels = LabelModel.__refine_solo_labels(labels, current_index)
         labels = LabelModel.__refine_my_labels(labels, current_user_id)
+        LabelModel.__cashe_labels_refined_all_for_display = labels
         return labels
 
     # 画面に描画する用
     @staticmethod
     def get_labels_refined_by_index_for_display(current_index, current_user_id):
+        if(not LabelModel.__cashe_labels_refined_by_index_for_display == None):
+            return LabelModel.__cashe_labels_refined_by_index_for_display
         labels = LabelModel.get_labels_by_index(current_index)
         labels = LabelModel.__refine_my_labels(labels, current_user_id)
+        LabelModel.__cashe_labels_refined_by_index_for_display = labels
         return labels
 
 
     # 表示のみに一時的に利用するラベル
     @staticmethod
     def create_labels_for_display(labels, tool):
+        if(not LabelModel.__cashe_label_for_display == None):
+            return LabelModel.__cashe_label_for_display
         label_for_displays = []
         for label in labels:
             label_for_display = LabelForDisplay()
@@ -154,11 +166,11 @@ class LabelModel:
                     # カーソルをポイントとして追加
                     label_for_display.add_cursor_point(LabelModel.get_cursor_point())
             label_for_displays.append(label_for_display)
+            LabelModel.__cashe_label_for_display = label_for_displays
         return label_for_displays
 
     @staticmethod
     def get_labels_by_index(index):
-
         return_labels = []
         for label in LabelModel.get_labels_all():
             if(index == label.get_index()):
@@ -266,7 +278,7 @@ class LabelModel:
     @staticmethod
     def regist_writting_label_by_acm(points, label_id, index):
         LabelModel.__writting_label = Label()
-        LabelModel.__writting_label.set_points(points)
+        LabelModel.__writting_label.set_points(np.array(points))
         LabelModel.__writting_label.set_index(index)
         LabelModel.__writting_label.regist(label_id, index)
         LabelModel.__writting_labels.append(LabelModel.__writting_label)
@@ -522,3 +534,9 @@ class LabelModel:
         LabelModel.__approach_refpoint = None
         LabelModel.__dragging_refpoint = None
         LabelModel.__insert_refpoint = None
+
+    # キャッシュ
+    def reset_cashe():
+        LabelModel.__cashe_label_for_display = None
+        LabelModel.__cashe_labels_refined_all_for_display = None
+        LabelModel.__cashe_labels_refined_by_index_for_display = None

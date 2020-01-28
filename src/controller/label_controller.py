@@ -227,28 +227,34 @@ class LabelController:
             nodule_list = LabelModel.get_nodule_id_list()
             return nodule_list[index-1]
 
+    @staticmethod
+    def update_table_widget_labels_at_index(change_index=False):
+        LabelController.update_table_widget_labels(change_index=True)
 
     @staticmethod
-    def update_table_widget_labels():
+    def update_table_widget_labels(change_index=False):
+        print("update_table_widget_labels()")
         # テーブル全体
         labels = LabelModel.get_labels_refined_all_for_label_tables(DicomModel.get_current_index(), UserModel.get_current_user_id())
         LabelController.__table_widget_labels.blockSignals(True)
-        if(len(labels)>0):
+        if(not(change_index and not LabelModel.is_solo())):
+            # インデックスによる変更　かつ　「全てのインデックス」表示のときは表の更新はしない
+            if(len(labels)>0):
 
-            LabelController.__table_widget_labels.setRowCount(len(labels))
+                LabelController.__table_widget_labels.setRowCount(len(labels))
 
-            for r, label in enumerate(labels):
-                nodule = LabelModel.get_nodule_by_label(label)
-                user = UserModel.get_user_by_id(nodule.get_user_id())
-                malignant_level = str(nodule.get_malignant_level())
-                comments = nodule.get_comments()
-                LabelController.__table_widget_labels.setItem(r, 0, QTableWidgetItem(str(label.get_nodule_id())))
-                LabelController.__table_widget_labels.setItem(r, 1, QTableWidgetItem(str(label.get_index())))
-                LabelController.__table_widget_labels.setItem(r, 2, QTableWidgetItem(malignant_level))
-                LabelController.__table_widget_labels.setItem(r, 3, QTableWidgetItem(user.get_name()))
-                LabelController.__table_widget_labels.setItem(r, 4, QTableWidgetItem(comments))
-        else:
-            LabelController.__table_widget_labels.setRowCount(0)
+                for r, label in enumerate(labels):
+                    nodule = LabelModel.get_nodule_by_label(label)
+                    user = UserModel.get_user_by_id(nodule.get_user_id())
+                    malignant_level = str(nodule.get_malignant_level())
+                    comments = nodule.get_comments()
+                    LabelController.__table_widget_labels.setItem(r, 0, QTableWidgetItem(str(label.get_nodule_id())))
+                    LabelController.__table_widget_labels.setItem(r, 1, QTableWidgetItem(str(label.get_index())))
+                    LabelController.__table_widget_labels.setItem(r, 2, QTableWidgetItem(malignant_level))
+                    LabelController.__table_widget_labels.setItem(r, 3, QTableWidgetItem(user.get_name()))
+                    LabelController.__table_widget_labels.setItem(r, 4, QTableWidgetItem(comments))
+            else:
+                LabelController.__table_widget_labels.setRowCount(0)
 
         if(LabelModel.is_solo()):
             LabelController.__button_switch_solo_all.setIcon(QIcon("./ui/solo.png"))
