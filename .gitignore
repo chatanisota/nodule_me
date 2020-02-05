@@ -6,3 +6,5 @@ movie/
 *.dcm
 *.npy
 *.json
+*__pycache__/
+*.pyc

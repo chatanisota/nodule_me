@@ -7,7 +7,8 @@ import cv2
 
 class DicomModel():
 
-    __dicom_head     = None
+    __dicom_pixel_spacing     = None
+    __dicom_slice_thickness   = None
     __dicom_slices   = None
     __current_index  = 0
 
@@ -32,8 +33,14 @@ class DicomModel():
         slices.sort(key = lambda x: float(x.ImagePositionPatient[2]))
 
         DicomModel.__dicom_slices  = [s.pixel_array for s in slices]
-        DicomModel.__dicom_head = slices[0]
+        DicomModel.__dicom_slice_thickness = slices[0].SliceThickness
+        DicomModel.__dicom_pixel_spacing = slice[0].PixelSpacing
         DicomModel.__current_index = 0
+
+    @staticmethod
+    def open_heads(pixel_spacing, slice_thickness):
+        DicomModel.__dicom_slice_thickness = slice_thickness
+        DicomModel.__dicom_pixel_spacing = pixel_spacing
 
     @staticmethod
     def open_png(np_array):
@@ -49,12 +56,12 @@ class DicomModel():
 
     @staticmethod
     def get_pixel_spacing():
-        pixel_spacing = DicomModel.__dicom_head.PixelSpacing
+        pixel_spacing = DicomModel.__dicom_pixel_spacing
         return [float(pixel_spacing[0]),float(pixel_spacing[1])]
 
     @staticmethod
     def get_slice_thickness():
-        return DicomModel.__dicom_head.SliceThickness
+        return DicomModel.__dicom_slice_thickness
 
     #出力用
     @staticmethod

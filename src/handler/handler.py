@@ -336,7 +336,7 @@ class Handler():
         elif(ToolController.get_tool() == Tool.TUBE):
             LabelController.tube_add(x, y)
         elif(ToolController.get_tool() == Tool.SNAKE):
-            ACMController.acm_snake(x, y)
+            ACMController.acm_release(x, y)
         Handler.__repaint_from_label()
 
     @staticmethod
