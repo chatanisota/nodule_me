@@ -109,6 +109,22 @@ class FileModel:
         return np.load(FileModel.get_select_open_file_npy())
 
     @staticmethod
+    def get_pixel_spacing():
+        with open(FileModel.get_select_open_file()) as f:
+            df = json.load(f)
+        pixel_spacing = df["PixelSpacing"]
+        return pixel_spacing
+
+    @staticmethod
+    def get_slice_thickness():
+        with open(FileModel.get_select_open_file()) as f:
+            df = json.load(f)
+        slice_thickness = df["SliceThickness"]
+        return slice_thickness
+
+
+
+    @staticmethod
     def get_png():
         img = cv2.imread(FileModel.get_select_open_file_png(), 0)
         return img.astype(np.int16)

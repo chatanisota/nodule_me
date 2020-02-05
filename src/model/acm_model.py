@@ -33,15 +33,18 @@ class ACMModel:
         return img
 
     def acm_snake(img_array):
-
         points = Snake.snake(img_array, ACMModel.__start_point, ACMModel.__end_point, num_v=50, iteration=500)
         points = ACMModel.__round_points(points)
         return points
 
     def acm_acm(img_array):
-        points = ACM.acm(img_array, ACMModel.__start_point, ACMModel.__end_point)
-        points = ACMModel.__round_points(points)
-        return points
+        if(not ACMModel.__start_point[0] == ACMModel.__end_point[0]):
+            if(not ACMModel.__start_point[1] == ACMModel.__end_point[1]):
+                print("oooooooooooooooo")
+                points = ACM.acm(img_array, ACMModel.__start_point, ACMModel.__end_point)
+                points = ACMModel.__round_points(points)
+                return points
+        return []
 
     def __round_points(points):
         prev_point = [-1,-1]

@@ -28,7 +28,8 @@ class ACM:
 
         cut_img = cv2.GaussianBlur(cut_img,(5,5),0)
         _, cut_img = cv2.threshold(cut_img,0,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU)
-        snake = active_contour(cut_img, init, alpha=0.046415888336127725, beta=0.1, gamma=1.0, max_iterations=100)
+        #0.1 b:0.01 c:1.0
+        snake = active_contour(cut_img, init, alpha=0.1, beta=0.01, gamma=1.0, max_iterations=100)
         snake[:,1] += start_x + 1
         snake[:,0] += start_y + 1
 

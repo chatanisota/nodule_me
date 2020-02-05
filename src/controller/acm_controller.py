@@ -16,16 +16,9 @@ class ACMController:
             ACMModel.set_end_point(temp_pos)
 
     def acm_release(x, y):
-        points = ACMModel.acm_acm(ImageModel.get_array_pixel_hist())
-        LabelModel.regist_writting_label_by_acm(points, LabelModel.generate_label_id(), DicomModel.get_current_index())
-        ACMModel.reset_start_point()
-        ACMModel.reset_end_point()
-
-    def acm_snake(x, y):
-        # do
         ACMController.acm_drag(x, y)
         points = ACMModel.acm_acm(ImageModel.get_array_pixel_hist())
-        print(points)
-        LabelModel.regist_writting_label_by_acm(points, LabelModel.generate_label_id(), DicomModel.get_current_index())
+        if(len(points)>0):
+            LabelModel.regist_writting_label_by_acm(points, LabelModel.generate_label_id(), DicomModel.get_current_index())
         ACMModel.reset_start_point()
         ACMModel.reset_end_point()

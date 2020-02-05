@@ -44,6 +44,7 @@ class FileController():
             # json データを読み込み
             LabelModel.input_labels(FileModel.get_labels())
             LabelModel.input_nodules(FileModel.get_nodules())
+            DicomModel.open_heads(FileModel.get_pixel_spacing(), FileModel.get_slice_thickness())
             DicomModel.open_npy(FileModel.get_npy())
 
         elif FileModel.is_open_file_png():
