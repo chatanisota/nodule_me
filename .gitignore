@@ -1,6 +1,7 @@
 src/dist/
 src/build/
 quessionair/
+movie/
 *.exe
 *.dcm
 *.npy
