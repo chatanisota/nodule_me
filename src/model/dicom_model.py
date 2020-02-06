@@ -34,7 +34,7 @@ class DicomModel():
 
         DicomModel.__dicom_slices  = [s.pixel_array for s in slices]
         DicomModel.__dicom_slice_thickness = slices[0].SliceThickness
-        DicomModel.__dicom_pixel_spacing = slice[0].PixelSpacing
+        DicomModel.__dicom_pixel_spacing = slices[0].PixelSpacing
         DicomModel.__current_index = 0
 
     @staticmethod
