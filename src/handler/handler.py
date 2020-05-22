@@ -403,7 +403,7 @@ class Handler():
     @staticmethod
     def clicked_button_ok_writting():
         LabelController.regist_writting_labels()
-        Handler.__repaint_from_corsor()
+        Handler.__repaint_from_label_regist_reduce()
 
     # ラベル関係
     @staticmethod
@@ -429,17 +429,17 @@ class Handler():
     @staticmethod
     def clicked_button_switch_solo_all():
         LabelController.switch_solo_all()
-        Handler.__repaint_from_label()
+        Handler.__repaint_from_label_regist_reduce()
 
     @staticmethod
     def clicked_button_switch_my_everyone():
         LabelController.switch_my_everyone()
-        Handler.__repaint_from_label()
+        Handler.__repaint_from_label_regist_reduce()
 
     @staticmethod
     def clicked_button_delete_label():
         LabelController.delete_current_table_label()
-        Handler.__repaint_from_label()
+        Handler.__repaint_from_label_regist_reduce()
 
     @staticmethod
     def itemClicked_table_widget_writting(index):
@@ -523,7 +523,10 @@ class Handler():
         CanvasController.update_from_zoom()
         MapController.update_from_zoom()
         ToolController.update_tool()
-        LabelController.update_table_widget_labels_at_index()
+        if(LabelController.is_solo()):
+            Handler.__repaint_from_label_regist_reduce()
+        else:
+            Handler.__repaint_from_label()        
         InfolabelController.update_infolabel()
         IndexController.update_index()
         CasheController.reset_cashe()
@@ -534,7 +537,6 @@ class Handler():
         ImageController.update_from_histogram()
         CanvasController.update_from_zoom()
         MapController.update_from_zoom()
-        # LabelController.update_table_widget_labels()
         InfolabelController.update_infolabel()
         CasheController.reset_cashe()
 
@@ -542,12 +544,20 @@ class Handler():
     def __repaint_from_zoom():
         CanvasController.update_from_zoom()
         MapController.update_from_zoom()
-        # LabelController.update_table_widget_labels()
         InfolabelController.update_infolabel()
         CasheController.reset_cashe()
 
     @staticmethod
     def __repaint_from_label():
+        CanvasController.update_from_maker()
+        MapController.update_from_maker()
+        LabelController.update_table_widget_labels_nochange_contents()
+        InfolabelController.update_infolabel()
+        CasheController.reset_cashe()
+
+    @staticmethod
+    # 増減するラベルの変更
+    def __repaint_from_label_regist_reduce():
         CanvasController.update_from_maker()
         MapController.update_from_maker()
         LabelController.update_table_widget_labels()

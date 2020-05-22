@@ -158,7 +158,6 @@ class LabelController:
     @staticmethod
     def regist_writting_labels():
         LabelModel.regist_writting_labels(LabelController.__get_nodule_id(), LabelController.__get_malignant_level(), LabelController.__get_comments(), UserModel.get_current_user_id())
-        LabelController.update_table_widget_labels()
 
     @staticmethod
     def switch_solo_all():
@@ -167,6 +166,10 @@ class LabelController:
     @staticmethod
     def switch_my_everyone():
         LabelModel.switch_my_everyone()
+
+    @staticmethod
+    def is_solo():
+        return LabelModel.is_solo()
 
 
     #テーブルの選択行が移動したとき
@@ -227,35 +230,29 @@ class LabelController:
             nodule_list = LabelModel.get_nodule_id_list()
             return nodule_list[index-1]
 
-    @staticmethod
-    def update_table_widget_labels_at_index(change_index=False):
-        LabelController.update_table_widget_labels(change_index=True)
+    def __update_table_widget_labels_contents():
 
-    @staticmethod
-    def update_table_widget_labels(change_index=False):
-        print("update_table_widget_labels()")
         # テーブル全体
         labels = LabelModel.get_labels_refined_all_for_label_tables(DicomModel.get_current_index(), UserModel.get_current_user_id())
-        LabelController.__table_widget_labels.blockSignals(True)
-        if(not(change_index and not LabelModel.is_solo())):
-            # インデックスによる変更　かつ　「全てのインデックス」表示のときは表の更新はしない
-            if(len(labels)>0):
+        # インデックスによる変更　かつ　「全てのインデックス」表示のときは表の更新はしない
+        if(len(labels)>0):
 
-                LabelController.__table_widget_labels.setRowCount(len(labels))
+            LabelController.__table_widget_labels.setRowCount(len(labels))
+            for r, label in enumerate(labels):
+                nodule = LabelModel.get_nodule_by_label(label)
+                user = UserModel.get_user_by_id(nodule.get_user_id())
+                malignant_level = str(nodule.get_malignant_level())
+                comments = nodule.get_comments()
+                LabelController.__table_widget_labels.setItem(r, 0, QTableWidgetItem(str(label.get_nodule_id())))
+                LabelController.__table_widget_labels.setItem(r, 1, QTableWidgetItem(str(label.get_index())))
+                LabelController.__table_widget_labels.setItem(r, 2, QTableWidgetItem(malignant_level))
+                LabelController.__table_widget_labels.setItem(r, 3, QTableWidgetItem(user.get_name()))
+                LabelController.__table_widget_labels.setItem(r, 4, QTableWidgetItem(comments))
+        else:
+            LabelController.__table_widget_labels.setRowCount(0)
 
-                for r, label in enumerate(labels):
-                    nodule = LabelModel.get_nodule_by_label(label)
-                    user = UserModel.get_user_by_id(nodule.get_user_id())
-                    malignant_level = str(nodule.get_malignant_level())
-                    comments = nodule.get_comments()
-                    LabelController.__table_widget_labels.setItem(r, 0, QTableWidgetItem(str(label.get_nodule_id())))
-                    LabelController.__table_widget_labels.setItem(r, 1, QTableWidgetItem(str(label.get_index())))
-                    LabelController.__table_widget_labels.setItem(r, 2, QTableWidgetItem(malignant_level))
-                    LabelController.__table_widget_labels.setItem(r, 3, QTableWidgetItem(user.get_name()))
-                    LabelController.__table_widget_labels.setItem(r, 4, QTableWidgetItem(comments))
-            else:
-                LabelController.__table_widget_labels.setRowCount(0)
-
+    @staticmethod
+    def __update_table_widget_labels_switch():
         if(LabelModel.is_solo()):
             LabelController.__button_switch_solo_all.setIcon(QIcon("./ui/solo.png"))
         else:
@@ -266,7 +263,10 @@ class LabelController:
         else:
             LabelController.__button_switch_my_everyone.setIcon(QIcon("./ui/everyone.png"))
 
+    @staticmethod
+    def __update_table_widget_labels_select():
         # 選択部分
+        labels = LabelModel.get_labels_refined_all_for_label_tables(DicomModel.get_current_index(), UserModel.get_current_user_id())
         current_items = LabelController.__table_widget_labels.selectedItems()
         if(len(current_items)>0):
             #ラベルが選択されている
@@ -284,13 +284,23 @@ class LabelController:
             LabelController.__button_delete_label.setVisible(True)
         LabelController.__table_widget_labels.blockSignals(False)
 
-        # 書き込み中タブ
+
+    @staticmethod
+    def __update_table_widget_writting_labels_setup():
+        # 書き込み中タブのセットアップ
+        if(LabelModel.is_writting_label() or LabelModel.is_writting_labels()):
+            LabelController.__widget_writting.setMinimumSize(200,0)
+        else:
+            LabelController.__widget_writting.setMinimumSize(0,0)
+
         LabelController.__combo_box_nodule_id.clear()
         LabelController.__combo_box_nodule_id.addItem("New nodule")
         LabelController.__combo_box_nodule_id.addItems(["add label into nodule id :" + str(s) for s in LabelModel.get_nodule_id_list()])
 
+    @staticmethod
+    def __update_table_widget_writting_labels_contents():
+        # 書き込み中タブ
         labels = LabelModel.get_labels_all_for_writting()
-        LabelController.__table_widget_writting.blockSignals(True)
         if(len(labels)>0):
             LabelController.__table_widget_writting.setRowCount(len(labels))
             for r, label in enumerate(labels):
@@ -298,7 +308,10 @@ class LabelController:
         else:
             LabelController.__table_widget_writting.setRowCount(0)
 
+    @staticmethod
+    def __update_table_widget_writting_labels_select():
         # 選択部分
+        labels = LabelModel.get_labels_all_for_writting()
         current_items = LabelController.__table_widget_writting.selectedItems()
         if(len(current_items)>0):
             #ラベルが選択されている
@@ -313,10 +326,40 @@ class LabelController:
             LabelController.__button_delete_writting.setVisible(False)
         else:
             LabelController.__button_delete_writting.setVisible(True)
+
+
+    @staticmethod
+    def update_table_widget_labels():
+        # テーブル全体
+        labels = LabelModel.get_labels_refined_all_for_label_tables(DicomModel.get_current_index(), UserModel.get_current_user_id())
+        LabelController.__table_widget_labels.blockSignals(True)
+
+        LabelController.__update_table_widget_labels_contents()
+        LabelController.__update_table_widget_labels_switch()
+        LabelController.__update_table_widget_labels_select()
+
+        LabelController.__table_widget_labels.blockSignals(False)
+
+        LabelController.__update_table_widget_writting_labels_setup()
+        LabelController.__table_widget_writting.blockSignals(True)
+        LabelController.__update_table_widget_writting_labels_contents()
+        LabelController.__update_table_widget_writting_labels_select()
         LabelController.__table_widget_writting.blockSignals(False)
 
-        # 書き込み中タブのサイズ
-        if(LabelModel.is_writting_label() or LabelModel.is_writting_labels()):
-            LabelController.__widget_writting.setMinimumSize(200,0)
-        else:
-            LabelController.__widget_writting.setMinimumSize(0,0)
+    @staticmethod
+    # ラベルの数の増減がない場合
+    def update_table_widget_labels_nochange_contents():
+
+        labels = LabelModel.get_labels_refined_all_for_label_tables(DicomModel.get_current_index(), UserModel.get_current_user_id())
+        LabelController.__table_widget_labels.blockSignals(True)
+
+        LabelController.__update_table_widget_labels_switch()
+        LabelController.__update_table_widget_labels_select()
+
+        LabelController.__table_widget_labels.blockSignals(False)
+
+        LabelController.__update_table_widget_writting_labels_setup()
+        LabelController.__table_widget_writting.blockSignals(True)
+        LabelController.__update_table_widget_writting_labels_contents()
+        LabelController.__update_table_widget_writting_labels_select()
+        LabelController.__table_widget_writting.blockSignals(False)

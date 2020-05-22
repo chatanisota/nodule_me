@@ -61,51 +61,6 @@ class CanvasController:
         qimg = QImage(img, img.shape[1], img.shape[0], img.shape[1] * 3, QImage.Format_RGB888)
         CanvasController.__label_image.setPixmap(QPixmap.fromImage(qimg))
 
-    # キャンバス用ラベル描写
-    @staticmethod
-    def __draw_points_canvasaa(img):
-
-        # 現在追加中のラベルの描写
-        if(LabelModel.is_writting_label()):
-            writting_label = LabelModel.get_writting_label()
-            points = writting_label.get_points()
-            if(not LabelModel.get_cursor_point() == None and ToolModel.get_tool() == Tool.PEN):
-                #現在点の描写
-
-                if(len(points)>0):
-                    points = np.vstack((points, LabelModel.get_cursor_point()))
-                else:
-                    points = [LabelModel.get_cursor_point()]
-                #LabelModel.reset_cursor_point()
-            if(len(points)>0):
-                points = np.apply_along_axis(lambda xy: MapModel.image_pos_to_canvas_pos(xy), 1, points)
-                img = LabelModel.draw_points_canvas(img, label_for_display, ToolModel.get_tool())
-
-        # 既存のラベルの描写
-        labels_list = LabelModel.get_labels_for_display_by_index(DicomModel.get_current_index(), UserModel.get_current_user_id())
-        if(ToolModel.get_tool() == Tool.TUBE):
-            label_tempolary_inserted, replaced_label = LabelModel.get_label_tempolary_inserted()
-            if(not label_tempolary_inserted == None):
-                labels_list.append(label_tempolary_inserted)
-
-
-        for label in labels_list:
-            if(ToolModel.get_tool() == Tool.TUBE and replaced_label is label):
-                continue
-            points = label.get_points()
-            points = np.apply_along_axis(lambda xy: MapModel.image_pos_to_canvas_pos(xy), 1, points)
-            highlight_index = LabelModel.get_highlight_index(label)
-
-            if(LabelModel.do_containing_writting_labels(label)):
-                # 追加中の結節の一部ラベル
-                line_color = Color.red()
-            else:
-                nodule = LabelModel.get_nodule_by_label(label)
-                line_color = UserModel.get_user_color_by_id(nodule.get_user_id())
-            img = LabelModel.draw_points_canvas(img, points, ToolModel.get_tool(), True, line_color, highlight_index)
-
-        return img
-
     @staticmethod
     def __draw_points_canvas(img):
         tool = ToolModel.get_tool()

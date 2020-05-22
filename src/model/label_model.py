@@ -142,6 +142,7 @@ class LabelModel:
         if(not LabelModel.__cashe_label_for_display == None):
             return LabelModel.__cashe_label_for_display
         label_for_displays = []
+
         for label in labels:
             label_for_display = LabelForDisplay()
             label_for_display.set_label(label)

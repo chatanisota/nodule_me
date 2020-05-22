@@ -8,3 +8,11 @@ movie/
 *.json
 *__pycache__/
 *.pyc
+src/classes/__pycache__/
+src/controller/__pycache__/
+src/handler/__pycache__/
+src/model/__pycache__/
+src/qt_designer/__pycache__/
+src/view/__pycache__/
+
+
