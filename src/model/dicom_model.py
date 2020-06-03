@@ -23,13 +23,21 @@ class DicomModel():
     @staticmethod
     def open_dicom(select_dir):
         # カレントファイルを指定
-        file_list = glob.glob(select_dir+'/*.dcm')
+        file_list_origin = glob.glob(select_dir+'/*.dcm')
+
+        file_list = []
+        # DIRFILE.dcmは削除
+        for file in file_list_origin:
+            if not ("DIRFILE.dcm" in file):
+                print(file)
+                file_list.append(file)
 
         if(file_list is None):
             return None
 
         # カレントファイルよりDICOMデータを読み込む
         slices = [pydicom.read_file(s) for s in file_list]
+
         slices.sort(key = lambda x: float(x.ImagePositionPatient[2]))
 
         DicomModel.__dicom_slices  = [s.pixel_array for s in slices]
