@@ -55,6 +55,7 @@ class ACM:
         center_y = start_y + height/2
         #
         # ここにLevel set methodを実装してね
+        #print(start_x, end_x, start_y, end_y)
         params = ACM.parameters(img, start_x, end_x, start_y, end_y)
         phi = find_lsf(**params)
         #
@@ -88,11 +89,11 @@ class ACM:
             'img': img,
             'initial_lsf': initial_lsf,
             'timestep': 5,  # time step
-            'iter_inner': 5,
-            'iter_outer': 60,
-            'lmda': 1.5,  # coefficient of the weighted length term L(phi)
-            'alfa': 1.5,  # coefficient of the weighted area term A(phi)
-            'epsilon': 1.5,  # parameter that specifies the width of the DiracDelta function
-            'sigma': 2,  # scale parameter in Gaussian kernel
+            'iter_inner': 8,
+            'iter_outer': 100,
+            'lmda': 12,  # coefficient of the weighted length term L(phi)
+            'alfa': 0.2,  # coefficient of the weighted area term A(phi)
+            'epsilon': 12,  # parameter that specifies the width of the DiracDelta function
+            'sigma': 8,  # scale parameter in Gaussian kernel
             'potential_function': DOUBLE_WELL,
         }
