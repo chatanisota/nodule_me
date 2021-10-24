@@ -7,6 +7,13 @@ class ACMModel:
     __start_point = None
     __end_point = None
 
+    __levelset_iterations = [0,10,20,30,40,50,60,70,80,90]
+    __levelset_alphas = [0,10,20,30,40,50,60,70,80,90]
+    __levelset_lambdas = [0,10,20,30,40,50,60,70,80,90]
+    __levelset_epsilons = [0,10,20,30,40,50,60,70,80,90]
+    __levelset_sigmas = [0,10,20,30,40,50,60,70,80,90]
+    __current_levelset_parameters = [0,0,0,0,0]
+
     def set_start_point(pos):
         ACMModel.__start_point = pos
 
@@ -56,3 +63,13 @@ class ACMModel:
             return_point.append(point)
             prev_point = point
         return return_point
+
+    def set_levelset_parameters(iteration, alpha, lambda_v, epsilon, sigma):
+        ACMModel.__current_levelset_parameters[0] = ACMModel.__levelset_iterations[iteration]
+        ACMModel.__current_levelset_parameters[1] = ACMModel.__levelset_alphas[alpha]
+        ACMModel.__current_levelset_parameters[2] = ACMModel.__levelset_lambdas[lambda_v]
+        ACMModel.__current_levelset_parameters[3] = ACMModel.__levelset_epsilons[epsilon]
+        ACMModel.__current_levelset_parameters[4] = ACMModel.__levelset_sigmas[sigma]
+
+    def get_levelset_parameters():
+        return ACMModel.__current_levelset_parameters

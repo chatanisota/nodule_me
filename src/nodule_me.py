@@ -1,5 +1,5 @@
 # pyinstaller nodule_me.py --onefile --noconsole --icon=nodule_me.ico
-# pyuic5 ui_noduleme.ui -o ui_noduleme.py
+# pyuic5 ./qt_designer/ui_noduleme.ui -o ./qt_designer/ui_noduleme.py
 # pyuic5 ui_label.ui -o ui_label.py
 # pyuic5 ui_pen.ui -o ui_pen.py
 # pyuic5 ui_hello.ui -o ui_hello.py
@@ -69,13 +69,27 @@ class MyForm(QWidget):
         Handler.set_button_switch_solo_all(self.ui.buttonSwitchSoloAll)
         Handler.set_button_switch_my_everyone(self.ui.buttonSwitchMyEveryone)
         Handler.set_button_delete_label(self.ui.buttonDeleteLabel)
+        Handler.set_button_corsor(self.ui.buttonCoursor)
         Handler.set_button_pen(self.ui.buttonPen)
         Handler.set_button_pinset(self.ui.buttonPinset)
         Handler.set_button_eracer(self.ui.buttonEracer)
         Handler.set_button_tube(self.ui.buttonTube)
         Handler.set_button_snake(self.ui.buttonACMSnake)
+        Handler.set_button_levelset(self.ui.buttonLevelset)
         Handler.set_combo_box_user(self.ui.comboBoxUser)
         Handler.set_label_info(self.ui.labelInfo)
+        Handler.set_widget_levelset(self.ui.widgetLevelset)
+        Handler.set_label_levelset_iteration(self.ui.labelLevelsetIteration)
+        Handler.set_label_levelset_alpha(self.ui.labelLevelsetAlpha)
+        Handler.set_label_levelset_lambda(self.ui.labelLevelsetLambda)
+        Handler.set_label_levelset_epsilon(self.ui.labelLevelsetEpsilon)
+        Handler.set_label_levelset_sigma(self.ui.labelLevelsetSigma)
+        Handler.set_slider_levelset_iteration(self.ui.sliderLevelsetIteration)
+        Handler.set_slider_levelset_alpha(self.ui.sliderLevelsetAlpha)
+        Handler.set_slider_levelset_lambda(self.ui.sliderLevelsetLambda)
+        Handler.set_slider_levelset_sigma(self.ui.sliderLevelsetSigma)
+        Handler.set_slider_levelset_epsilon(self.ui.sliderLevelsetEpsilon)
+
         # LABEL TAB系
         self.group = QButtonGroup()
         self.group.addButton(self.ui.radioButton1,1)

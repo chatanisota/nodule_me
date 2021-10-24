@@ -152,6 +152,11 @@ class Handler():
 
     #ツールバー
     @staticmethod
+    def set_button_corsor(ui):
+        ui.clicked.connect(Handler.clicked_button_corsor)
+        ToolController.set_button_corsor(ui)
+
+    @staticmethod
     def set_button_pen(ui):
         ui.clicked.connect(Handler.clicked_button_pen)
         ToolController.set_button_pen(ui)
@@ -175,6 +180,62 @@ class Handler():
     def set_button_snake(ui):
         ui.clicked.connect(Handler.clicked_button_snake)
         ToolController.set_button_snake(ui)
+
+    @staticmethod
+    def set_button_levelset(ui):
+        ui.clicked.connect(Handler.clicked_button_levelset)
+        ToolController.set_button_levelset(ui)
+
+    # ツールボックス
+    @staticmethod
+    def set_widget_levelset(ui):
+        ToolController.set_widget_levelset(ui)
+
+    @staticmethod
+    def set_slider_levelset_iteration(ui):
+        ui.valueChanged.connect(Handler.sliderMoved_slider_levelset_iteration)
+        ACMController.set_slider_levelset_iteration(ui)
+
+    @staticmethod
+    def set_slider_levelset_alpha(ui):
+        ui.valueChanged.connect(Handler.sliderMoved_slider_levelset_alpha)
+        ACMController.set_slider_levelset_alpha(ui)
+
+    @staticmethod
+    def set_slider_levelset_lambda(ui):
+        ui.valueChanged.connect(Handler.sliderMoved_slider_levelset_lambda)
+        ACMController.set_slider_levelset_lambda(ui)
+
+    @staticmethod
+    def set_slider_levelset_epsilon(ui):
+        ui.valueChanged.connect(Handler.sliderMoved_slider_levelset_epsilon)
+        ACMController.set_slider_levelset_epsilon(ui)
+
+    @staticmethod
+    def set_slider_levelset_sigma(ui):
+        ui.valueChanged.connect(Handler.sliderMoved_slider_levelset_sigma)
+        ACMController.set_slider_levelset_sigma(ui)
+
+    @staticmethod
+    def set_label_levelset_iteration(ui):
+        ACMController.set_label_levelset_iteration(ui)
+
+    @staticmethod
+    def set_label_levelset_alpha(ui):
+        ACMController.set_label_levelset_alpha(ui)
+
+    @staticmethod
+    def set_label_levelset_lambda(ui):
+        ACMController.set_label_levelset_lambda(ui)
+
+    @staticmethod
+    def set_label_levelset_epsilon(ui):
+        ACMController.set_label_levelset_epsilon(ui)
+
+    @staticmethod
+    def set_label_levelset_sigma(ui):
+        ACMController.set_label_levelset_sigma(ui)
+
 
     # 下のラベル
     @staticmethod
@@ -215,6 +276,7 @@ class Handler():
     @staticmethod
     def set_message_dialog(ui):
         MessageDialogController.set_message_dialog(ui)
+
 
 
     #----------------------------------------------------------------------
@@ -314,7 +376,9 @@ class Handler():
     #描写画面内
     @staticmethod
     def canvas_mouse_press(x, y):
-        if(ToolController.get_tool() == Tool.PEN):
+        if(ToolController.get_tool() == Tool.CORSOR):
+            pass
+        elif(ToolController.get_tool() == Tool.PEN):
             pass
         elif(ToolController.get_tool() == Tool.PINSET):
             LabelController.pinset_press(x, y)
@@ -323,11 +387,15 @@ class Handler():
         elif(ToolController.get_tool() == Tool.TUBE):
             pass
         elif(ToolController.get_tool() == Tool.SNAKE):
-            ACMController.acm_press(x, y)
+            ACMController.snake_press(x, y)
+        elif(ToolController.get_tool() == Tool.LEVELSET):
+            ACMController.levelset_press(x, y)
 
     @staticmethod
     def canvas_mouse_release(x, y):
-        if(ToolController.get_tool() == Tool.PEN):
+        if(ToolController.get_tool() == Tool.CORSOR):
+            pass
+        elif(ToolController.get_tool() == Tool.PEN):
             LabelController.pen_add(x, y)
         elif(ToolController.get_tool() == Tool.PINSET):
             pass
@@ -336,12 +404,16 @@ class Handler():
         elif(ToolController.get_tool() == Tool.TUBE):
             LabelController.tube_add(x, y)
         elif(ToolController.get_tool() == Tool.SNAKE):
-            ACMController.acm_release(x, y)
+            ACMController.snake_release(x, y)
+        elif(ToolController.get_tool() == Tool.LEVELSET):
+            ACMController.levelset_release(x, y)
         Handler.__repaint_from_label()
 
     @staticmethod
     def canvas_mouse_move(x, y):
-        if(ToolController.get_tool() == Tool.PEN):
+        if(ToolController.get_tool() == Tool.CORSOR):
+            pass
+        elif(ToolController.get_tool() == Tool.PEN):
             LabelController.pen_move(x, y)
         elif(ToolController.get_tool() == Tool.PINSET):
             LabelController.pinset_move(x, y)
@@ -351,7 +423,8 @@ class Handler():
             LabelController.tube_move(x, y)
         elif(ToolController.get_tool() == Tool.SNAKE):
             pass
-
+        elif(ToolController.get_tool() == Tool.LEVELSET):
+            pass
 
         Handler.__repaint_from_corsor()
 
@@ -463,6 +536,12 @@ class Handler():
 
     #ツール関係
     @staticmethod
+    def clicked_button_corsor():
+        ToolController.change_tool(Tool.CORSOR)
+        ToolController.update_tool()
+        Handler.__repaint_from_corsor()
+
+    @staticmethod
     def clicked_button_pen():
         ToolController.change_tool(Tool.PEN)
         ToolController.update_tool()
@@ -491,6 +570,29 @@ class Handler():
         ToolController.change_tool(Tool.SNAKE)
         ToolController.update_tool()
         Handler.__repaint_from_corsor()
+
+    @staticmethod
+    def clicked_button_levelset():
+        ToolController.change_tool(Tool.LEVELSET)
+        ToolController.update_tool()
+        Handler.__repaint_from_corsor()
+
+    # ツールボックス関係
+    def sliderMoved_slider_levelset_iteration():
+        ACMController.change_levelset_parameters()
+
+    def sliderMoved_slider_levelset_alpha():
+        ACMController.change_levelset_parameters()
+
+    def sliderMoved_slider_levelset_lambda():
+        ACMController.change_levelset_parameters()
+
+    def sliderMoved_slider_levelset_epsilon():
+        ACMController.change_levelset_parameters()
+
+    def sliderMoved_slider_levelset_sigma():
+        ACMController.change_levelset_parameters()
+
 
     # 最初のダイアログ
     def clicked_button_start_hello():
@@ -526,7 +628,7 @@ class Handler():
         if(LabelController.is_solo()):
             Handler.__repaint_from_label_regist_reduce()
         else:
-            Handler.__repaint_from_label()        
+            Handler.__repaint_from_label()
         InfolabelController.update_infolabel()
         IndexController.update_index()
         CasheController.reset_cashe()
