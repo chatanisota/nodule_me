@@ -9,6 +9,8 @@ class Nodule:
     comments = ""
     user_id = 0
     WRITTING_ID = -1
+    WRITTINGS_ID = -2
+    SUSPENDED_ID = -3
 
     def regist(self, nodule_id, malignant_level, comments, user_id):
         self.nodule_id = nodule_id
@@ -36,6 +38,18 @@ class Nodule:
     def prefab_writting_nodule():
         nodule = Nodule()
         nodule.regist(Nodule.WRITTING_ID, 0, "[labeling]", User.WRITTING_ID)
+        return nodule
+
+    @staticmethod
+    def prefab_writtings_nodule():
+        nodule = Nodule()
+        nodule.regist(Nodule.WRITTINGS_ID, 0, "[labeling]", User.WRITTINGS_ID)
+        return nodule
+
+    @staticmethod
+    def prefab_suspended_nodule():
+        nodule = Nodule()
+        nodule.regist(Nodule.SUSPENDED_ID, 0, "[labeling]", User.SUSPENDED_ID)
         return nodule
 
     #書き込み用

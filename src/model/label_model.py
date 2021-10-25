@@ -13,8 +13,9 @@ from copy import copy
 
 class LabelModel:
 
-    __writting_label = None          # ラベル作成中のラベル
-    __writting_labels = []         # 結節作成中のラベル群
+    __writting_label = None         # ラベル作成中のラベル
+    __writting_labels = []          # 結節作成中のラベル群
+    __suspended_label = None       # 確認中のラベル
     __labels = []
     __nodules = []
     __cursor_point = None       # カーソル（マウス）の場所を示す点
@@ -34,6 +35,10 @@ class LabelModel:
     @staticmethod
     def is_writting_label():
         return not LabelModel.__writting_label == None
+
+    @staticmethod
+    def is_suspended_label():
+        return not LabelModel.__suspended_label == None
 
     @staticmethod
     def is_writting_labels():
@@ -56,12 +61,18 @@ class LabelModel:
         return label is LabelModel.__writting_label
 
     @staticmethod
+    def __do_contain_suspended_label(label):
+        return label is LabelModel.__suspended_label
+
+    @staticmethod
     def get_labels_all():
         labels = copy(LabelModel.__labels)
         if LabelModel.is_writting_labels():
             labels.extend(LabelModel.__writting_labels)
         if LabelModel.is_writting_label():
             labels.extend([LabelModel.__writting_label])
+        if LabelModel.is_suspended_label():
+            labels.extend([LabelModel.__suspended_label])
         return labels
 
     @staticmethod
@@ -212,9 +223,12 @@ class LabelModel:
 
     @staticmethod
     def get_nodule_by_label(label):
-        if(LabelModel.__do_contain_writting_label(label) or LabelModel.__do_contain_writting_labels(label)):
-            # 作成中のラベルである場合
+        if LabelModel.__do_contain_writting_label(label):
             return Nodule.prefab_writting_nodule()
+        if LabelModel.__do_contain_writting_labels(label):
+            return Nodule.prefab_writtings_nodule()
+        if LabelModel.__do_contain_suspended_label(label):
+            return Nodule.prefab_suspended_nodule()
         return LabelModel.get_nodule_by_id(label.get_nodule_id())
 
     # ADD
@@ -226,6 +240,11 @@ class LabelModel:
 
         if(not LabelModel.__cursor_point == None):
             LabelModel.__writting_label.add(LabelModel.__cursor_point)
+
+    def add_suspended_label(points, index):
+        LabelModel.__suspended_label = Label()
+        LabelModel.__suspended_label.set_index(index)
+        LabelModel.__suspended_label.set_points(np.array(points))
 
     @staticmethod
     def get_writting_label_color():
@@ -285,6 +304,14 @@ class LabelModel:
         LabelModel.__writting_labels.append(LabelModel.__writting_label)
         LabelModel.__writting_label = None
 
+    @staticmethod
+    def regist_suspended_label(label_id, index):
+        LabelModel.__suspended_label.regist(label_id, index)
+        LabelModel.__writting_labels.append(LabelModel.__suspended_label)
+        LabelModel.__suspended_label = None
+
+
+
     # 結節一つ分（複数ラベル）を登録、regist_writting_label()の後に行う
     @staticmethod
     def regist_writting_labels(nodule_id, malignant_level, comments, user_id):
@@ -300,6 +327,10 @@ class LabelModel:
     @staticmethod
     def reset_writting_label():
         LabelModel.__writting_label = None
+
+    @staticmethod
+    def reset_suspended_label():
+        LabelModel.__suspended_label = None
 
     @staticmethod
     def reset_writting_labels():
@@ -474,13 +505,17 @@ class LabelModel:
                 else:
                     point_color = Color.aqua()
 
-                if(tool == Tool.PEN):
+                if(tool == Tool.CORSOR):
+                    cv2.circle(img, (int(point[0]), int(point[1])), 2, point_color.get_color(), -1)
+                elif(tool == Tool.PEN):
                     cv2.circle(img, (int(point[0]), int(point[1])), 2, point_color.get_color(), -1)
                 elif(tool == Tool.PINSET):
                     cv2.circle(img, (int(point[0]), int(point[1])), 5, point_color.get_color(), 2)
                 elif(tool == Tool.ERACER):
                     cv2.circle(img, (int(point[0]), int(point[1])), 5, point_color.get_color(), 2)
                 elif(tool == Tool.TUBE):
+                    cv2.circle(img, (int(point[0]), int(point[1])), 2, point_color.get_color(), -1)
+                elif(tool == Tool.LEVELSET):
                     cv2.circle(img, (int(point[0]), int(point[1])), 2, point_color.get_color(), -1)
 
                 # 線の描写
@@ -530,6 +565,7 @@ class LabelModel:
 
     def reset():
         LabelModel.__writting_label = None
+        LabelModel.__suspending_label = None
         LabelModel.__labels = []
         LabelModel.__cursor_point = None
         LabelModel.__approach_refpoint = None

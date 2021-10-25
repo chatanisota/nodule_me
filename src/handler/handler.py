@@ -236,6 +236,17 @@ class Handler():
     def set_label_levelset_sigma(ui):
         ACMController.set_label_levelset_sigma(ui)
 
+    @staticmethod
+    def set_button_levelset_ok(ui):
+        ui.clicked.connect(Handler.clicked_button_levelset_ok)
+        ACMController.set_button_levelset_ok(ui)
+
+
+    # ACM関連
+    @staticmethod
+    def set_hander_end_levelset():
+        ACMController.set_hander_end_levelset(Handler.end_levelset)
+
 
     # 下のラベル
     @staticmethod
@@ -282,7 +293,6 @@ class Handler():
     #----------------------------------------------------------------------
     # 実行部分
     #----------------------------------------------------------------------
-
     def initialize():
         MainController.hide_main_dialog()
         UserController.init_users()
@@ -433,7 +443,9 @@ class Handler():
         if(ToolController.get_tool() == Tool.PINSET):
             LabelController.pinset_drag(x, y)
         elif(ToolController.get_tool() == Tool.SNAKE):
-            ACMController.acm_drag(x, y)
+            ACMController.snake_drag(x, y)
+        elif(ToolController.get_tool() == Tool.LEVELSET):
+            ACMController.levelset_drag(x, y)
         Handler.__repaint_from_zoom()
 
     @staticmethod
@@ -545,54 +557,66 @@ class Handler():
     def clicked_button_pen():
         ToolController.change_tool(Tool.PEN)
         ToolController.update_tool()
-        Handler.__repaint_from_corsor()
+        Handler.__repaint_from_index()
 
     @staticmethod
     def clicked_button_pinset():
         ToolController.change_tool(Tool.PINSET)
         ToolController.update_tool()
-        Handler.__repaint_from_corsor()
+        Handler.__repaint_from_index()
 
     @staticmethod
     def clicked_button_eracer():
         ToolController.change_tool(Tool.ERACER)
         ToolController.update_tool()
-        Handler.__repaint_from_corsor()
+        Handler.__repaint_from_index()
 
     @staticmethod
     def clicked_button_tube():
         ToolController.change_tool(Tool.TUBE)
         ToolController.update_tool()
-        Handler.__repaint_from_corsor()
+        Handler.__repaint_from_index()
 
     @staticmethod
     def clicked_button_snake():
         ToolController.change_tool(Tool.SNAKE)
         ToolController.update_tool()
-        Handler.__repaint_from_corsor()
+        Handler.__repaint_from_index()
 
     @staticmethod
     def clicked_button_levelset():
         ToolController.change_tool(Tool.LEVELSET)
         ToolController.update_tool()
-        Handler.__repaint_from_corsor()
+        Handler.__repaint_from_index()
 
     # ツールボックス関係
     def sliderMoved_slider_levelset_iteration():
         ACMController.change_levelset_parameters()
+        Handler.__repaint_from_corsor()
 
     def sliderMoved_slider_levelset_alpha():
         ACMController.change_levelset_parameters()
+        Handler.__repaint_from_corsor()
 
     def sliderMoved_slider_levelset_lambda():
         ACMController.change_levelset_parameters()
+        Handler.__repaint_from_corsor()
 
     def sliderMoved_slider_levelset_epsilon():
         ACMController.change_levelset_parameters()
+        Handler.__repaint_from_corsor()
 
     def sliderMoved_slider_levelset_sigma():
         ACMController.change_levelset_parameters()
+        Handler.__repaint_from_corsor()
 
+    def clicked_button_levelset_ok():
+        ACMController.levelset_regist()
+        Handler.__repaint_from_corsor()
+
+    def end_levelset():
+        ACMController.levelset_end()
+        Handler.__repaint_from_corsor()
 
     # 最初のダイアログ
     def clicked_button_start_hello():
@@ -653,6 +677,7 @@ class Handler():
     def __repaint_from_label():
         CanvasController.update_from_maker()
         MapController.update_from_maker()
+        ACMController.update_acm()
         LabelController.update_table_widget_labels_nochange_contents()
         InfolabelController.update_infolabel()
         CasheController.reset_cashe()
@@ -662,6 +687,7 @@ class Handler():
     def __repaint_from_label_regist_reduce():
         CanvasController.update_from_maker()
         MapController.update_from_maker()
+        ACMController.update_acm()
         LabelController.update_table_widget_labels()
         InfolabelController.update_infolabel()
         CasheController.reset_cashe()
@@ -671,5 +697,6 @@ class Handler():
     def __repaint_from_corsor():
         CanvasController.update_from_maker()
         MapController.update_from_maker()
+        ACMController.update_acm()
         InfolabelController.update_infolabel()
         CasheController.reset_cashe()

@@ -435,7 +435,7 @@
            <property name="minimumSize">
             <size>
              <width>0</width>
-             <height>110</height>
+             <height>200</height>
             </size>
            </property>
            <widget class="QWidget" name="verticalLayoutWidget">
@@ -444,13 +444,23 @@
               <x>0</x>
               <y>-1</y>
               <width>521</width>
-              <height>145</height>
+              <height>211</height>
              </rect>
             </property>
-            <layout class="QVBoxLayout" name="verticalLayout_8" stretch="0,0,0,0,0,0">
+            <layout class="QVBoxLayout" name="verticalLayout_8" stretch="0,0,0,0,0,0,0,0">
+             <property name="spacing">
+              <number>4</number>
+             </property>
              <property name="sizeConstraint">
               <enum>QLayout::SetDefaultConstraint</enum>
              </property>
+             <item>
+              <widget class="QProgressBar" name="progressBarLevelset">
+               <property name="value">
+                <number>24</number>
+               </property>
+              </widget>
+             </item>
              <item>
               <layout class="QHBoxLayout" name="horizontalLayout_9">
                <item>
@@ -691,6 +701,64 @@
                  </property>
                  <property name="text">
                   <string>sigma</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_21">
+               <item>
+                <spacer name="horizontalSpacer_8">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item>
+                <widget class="QPushButton" name="buttonLevelsetCansel">
+                 <property name="minimumSize">
+                  <size>
+                   <width>80</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <pointsize>12</pointsize>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>Cansel</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="buttonLevelsetOk">
+                 <property name="minimumSize">
+                  <size>
+                   <width>80</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <pointsize>12</pointsize>
+                   <weight>75</weight>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="styleSheet">
+                  <string notr="true">background-color: rgb(255, 170, 0);</string>
+                 </property>
+                 <property name="text">
+                  <string>OK</string>
                  </property>
                 </widget>
                </item>
@@ -988,6 +1056,7 @@
               </property>
               <property name="font">
                <font>
+                <pointsize>12</pointsize>
                 <weight>75</weight>
                 <bold>true</bold>
                </font>
@@ -996,7 +1065,7 @@
                <string notr="true">background-color: rgb(255, 170, 0);</string>
               </property>
               <property name="text">
-               <string>Regist label &gt;&gt;</string>
+               <string>OK (Add this nodule)</string>
               </property>
              </widget>
             </item>

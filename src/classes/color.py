@@ -23,6 +23,10 @@ class Color:
     	return Color(128,128,0)
 
     @staticmethod
+    def orange():
+    	return Color(243,152,0)
+
+    @staticmethod
     def yellow():
     	return Color(255,255,0)
 

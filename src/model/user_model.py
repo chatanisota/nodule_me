@@ -57,6 +57,10 @@ class UserModel:
         for user in UserModel.__user_list:
             if id == User.WRITTING_ID:
                 return User.prefab_writting_user()
+            if id == User.WRITTINGS_ID:
+                return User.prefab_writtings_user()
+            if id == User.SUSPENDED_ID:
+                return User.prefab_suspended_user()
             if id == user.get_id():
                 return user
         return None

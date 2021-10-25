@@ -14,7 +14,7 @@ Released Under MIT License
 import numpy as np
 from scipy.ndimage import laplace
 
-from level_set_method.potential_func import SINGLE_WELL, DOUBLE_WELL
+from library.level_set_method.potential_func import SINGLE_WELL, DOUBLE_WELL
 
 
 def drlse_edge(phi_0, g, lmda, mu, alfa, epsilon, timestep, iters, potential_function):  # Updated Level Set Function

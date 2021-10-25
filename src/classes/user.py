@@ -6,6 +6,8 @@ class User:
     __user_name = "nanasi"
     __color = Color.red()
     WRITTING_ID = -1
+    WRITTINGS_ID = -2
+    SUSPENDED_ID = -3
 
     def __init__(self, user_id, user_name, color):
         self.__user_id = user_id
@@ -24,4 +26,14 @@ class User:
     @staticmethod
     def prefab_writting_user():
         user = User(User.WRITTING_ID, "", Color.red())
+        return user
+
+    @staticmethod
+    def prefab_writtings_user():
+        user = User(User.WRITTINGS_ID, "", Color.orange())
+        return user
+
+    @staticmethod
+    def prefab_suspended_user():
+        user = User(User.SUSPENDED_ID, "", Color.red())
         return user

@@ -13,8 +13,8 @@ Released Under MIT License
 import numpy as np
 from scipy.ndimage import gaussian_filter
 
-from level_set_method.drlse_algo import drlse_edge
-from level_set_method.potential_func import DOUBLE_WELL, SINGLE_WELL
+from library.level_set_method.drlse_algo import drlse_edge
+from library.level_set_method.potential_func import DOUBLE_WELL, SINGLE_WELL
 #from level_set_method.show_fig import show_fig1, show_fig2, draw_all
 
 
