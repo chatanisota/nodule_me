@@ -1,6 +1,6 @@
 import numpy as np
 import cv2
-from library.level_set_method.find_lsf import find_lsf
+from library.level_set_method.find_lsf import FinfLSF
 from library.level_set_method.potential_func import DOUBLE_WELL, SINGLE_WELL
 from skimage import measure
 from PyQt5 import QtCore
@@ -43,36 +43,39 @@ class Levelset(QtCore.QThread):
             self.stopped = False
 
     def run(self):
-        print(LevelsetParameter.Iterations)
-        print(LevelsetParameter.Alphas)
-        print(LevelsetParameter.Lambdas)
-        print(LevelsetParameter.Epsilons)
-        print(LevelsetParameter.Sigmas)
-        for iteration_i, iteration in enumerate(LevelsetParameter.Iterations):
-            for alpha_i, alpha in enumerate(LevelsetParameter.Alphas):
-                for lambda_i, lambda_v in enumerate(LevelsetParameter.Lambdas):
-                    for epsilon_i, epsilon in enumerate(LevelsetParameter.Epsilons):
-                        for sigma_i, sigma in enumerate(LevelsetParameter.Sigmas):
+        for alpha_i, alpha in enumerate(LevelsetParameter.Alphas):
+            for lambda_i, lambda_v in enumerate(LevelsetParameter.Lambdas):
+                for epsilon_i, epsilon in enumerate(LevelsetParameter.Epsilons):
+                    for sigma_i, sigma in enumerate(LevelsetParameter.Sigmas):
+
+                        params = Levelset.parameters(
+                            self.__img_array,
+                            self.__start_point,
+                            self.__end_point,
+                            alpha,
+                            lambda_v,
+                            epsilon,
+                            sigma
+                        )
+
+                        lsf = FinfLSF()
+                        lsf.setup(**params)
+
+                        for iteration_i, iteration in enumerate(LevelsetParameter.Iterations):
                             if self.stopped:
                                 break
 
-                            #result = Levelset.level_set(
-                            #    self.__img_array,
-                            #    self.__start_point,
-                            #    self.__end_point,
-                            #    iteration,
-                            #    alpha,
-                            #    lambda_v,
-                            #    epsilon,
-                            #    sigma
-                            #)
-                            result = [
-                                [iteration_i*30+100,iteration_i*30+100],
-                                [alpha_i*30+200,alpha_i*30+100],
-                                [lambda_i*30+200,lambda_i*30+200],
-                                [epsilon_i*30+150,epsilon_i*30+250],
-                                [sigma_i*30+100,sigma_i*30+200]
-                            ]
+                            while(lsf.calc() < iteration):
+                                if self.stopped:
+                                    break
+
+                            phi = lsf.finish()
+
+                            counters = measure.find_contours(phi, 0)
+
+                            result = []
+                            for counter in counters[0]:
+                                result.append([int(counter[0]),int(counter[1])])
 
                             data = {
                                 'iteration': iteration_i,
@@ -89,7 +92,7 @@ class Levelset(QtCore.QThread):
     # start_pos: 選択した赤いエリアの左上の座標
     # end_pos: 選択した赤いエリアの右下の座標
     @staticmethod
-    def level_set(img, start_pos, end_pos, iteration, alpha, lambda_v, epsilon, sigma):
+    def parameters(img, start_pos, end_pos, alpha, lambda_v, epsilon, sigma):
         start_x = min(start_pos[1], end_pos[1])
         end_x = max(start_pos[1], end_pos[1])
         start_y = min(start_pos[0], end_pos[0])
@@ -109,9 +112,8 @@ class Levelset(QtCore.QThread):
         params = {
             'img': img,
             'initial_lsf': initial_lsf,
-            'timestep': iteration,  # time step
+            'timestep': 1,  # time step
             'iter_inner': 8,
-            'iter_outer': 100,
             'lmda': lambda_v,  # coefficient of the weighted length term L(phi)
             'alfa': alpha,  # coefficient of the weighted area term A(phi)
             'epsilon': epsilon,  # parameter that specifies the width of the DiracDelta function
@@ -119,13 +121,4 @@ class Levelset(QtCore.QThread):
             'potential_function': DOUBLE_WELL,
         }
 
-        phi = find_lsf(**params)
-
-        counters = measure.find_contours(phi, 0)
-
-        counters_int = []
-
-        for counter in counters[0]:
-            counters_int.append([int(counter[0]),int(counter[1])])
-
-        return counters_int
+        return params

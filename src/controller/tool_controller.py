@@ -67,21 +67,5 @@ class ToolController:
             ToolController.__button_levelset.setEnabled(False)
             ToolController.__widget_levelset.setMinimumSize(0,200)
 
-        if(tool != Tool.CORSOR):
-            LabelModel.reset_writting_label()
-        if(tool != Tool.PEN):
-            pass
-        if(tool != Tool.PINSET):
-            pass
-        if(tool != Tool.ERACER):
-            pass
-        if(tool != Tool.TUBE):
-            pass
-        if(tool != Tool.SNAKE):
-            pass
-        if(tool != Tool.LEVELSET):
-            LabelModel.reset_suspended_label()
-            ACMModel.cansel_levelset()
-
     def get_tool():
         return ToolModel.get_tool()

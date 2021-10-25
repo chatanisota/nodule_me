@@ -90,7 +90,10 @@ class MyForm(QWidget):
         Handler.set_slider_levelset_sigma(self.ui.sliderLevelsetSigma)
         Handler.set_slider_levelset_epsilon(self.ui.sliderLevelsetEpsilon)
         Handler.set_button_levelset_ok(self.ui.buttonLevelsetOk)
-        Handler.set_hander_end_levelset()
+        Handler.set_button_levelset_cansel(self.ui.buttonLevelsetCansel)
+        Handler.set_progress_bar_levelset(self.ui.progressBarLevelset)
+        Handler.set_hander_onesteped_levelset()
+        Handler.set_hander_completed_levelset()
 
         # LABEL TAB系
         self.group = QButtonGroup()

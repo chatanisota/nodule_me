@@ -241,11 +241,24 @@ class Handler():
         ui.clicked.connect(Handler.clicked_button_levelset_ok)
         ACMController.set_button_levelset_ok(ui)
 
+    @staticmethod
+    def set_button_levelset_cansel(ui):
+        ui.clicked.connect(Handler.clicked_button_levelset_cansel)
+        ACMController.set_button_levelset_cansel(ui)
+
 
     # ACM関連
     @staticmethod
-    def set_hander_end_levelset():
-        ACMController.set_hander_end_levelset(Handler.end_levelset)
+    def set_progress_bar_levelset(ui):
+        ACMController.set_progress_bar_levelset(ui)
+
+    @staticmethod
+    def set_hander_completed_levelset():
+        ACMController.set_hander_completed_levelset(Handler.completed_levelset)
+
+    @staticmethod
+    def set_hander_onesteped_levelset():
+        ACMController.set_hander_onesteped_levelset(Handler.onesteped_levelset)
 
 
     # 下のラベル
@@ -551,7 +564,7 @@ class Handler():
     def clicked_button_corsor():
         ToolController.change_tool(Tool.CORSOR)
         ToolController.update_tool()
-        Handler.__repaint_from_corsor()
+        Handler.__repaint_from_index()
 
     @staticmethod
     def clicked_button_pen():
@@ -612,11 +625,19 @@ class Handler():
 
     def clicked_button_levelset_ok():
         ACMController.levelset_regist()
-        Handler.__repaint_from_corsor()
+        Handler.__repaint_from_label()
 
-    def end_levelset():
-        ACMController.levelset_end()
-        Handler.__repaint_from_corsor()
+    def clicked_button_levelset_cansel():
+        ACMController.levelset_cansel()
+        Handler.__repaint_from_label()
+
+    def completed_levelset():
+        ACMController.levelset_completed()
+        Handler.__repaint_from_label()
+
+    def onesteped_levelset(json_str):
+        ACMController.levelset_onesteped(json_str)
+        Handler.__repaint_from_label()
 
     # 最初のダイアログ
     def clicked_button_start_hello():
@@ -644,6 +665,9 @@ class Handler():
 
     @staticmethod
     def __repaint_from_index():
+        ACMController.levelset_cansel()
+        LabelController.writting_cansel()
+
         ImageController.update_from_image()
         HistogramController.update_from_image()
         CanvasController.update_from_zoom()
@@ -677,8 +701,8 @@ class Handler():
     def __repaint_from_label():
         CanvasController.update_from_maker()
         MapController.update_from_maker()
-        ACMController.update_acm()
         LabelController.update_table_widget_labels_nochange_contents()
+        ACMController.update_acm()
         InfolabelController.update_infolabel()
         CasheController.reset_cashe()
 
@@ -687,7 +711,6 @@ class Handler():
     def __repaint_from_label_regist_reduce():
         CanvasController.update_from_maker()
         MapController.update_from_maker()
-        ACMController.update_acm()
         LabelController.update_table_widget_labels()
         InfolabelController.update_infolabel()
         CasheController.reset_cashe()
@@ -697,6 +720,5 @@ class Handler():
     def __repaint_from_corsor():
         CanvasController.update_from_maker()
         MapController.update_from_maker()
-        ACMController.update_acm()
         InfolabelController.update_infolabel()
         CasheController.reset_cashe()

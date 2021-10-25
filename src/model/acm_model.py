@@ -19,6 +19,13 @@ class ACMModel:
         int((len(LevelsetParameter.Sigmas)-1)/2)
     ]
 
+    __current_levelset_progress_index = 0
+    __current_levelset_progress_max = (
+        len(LevelsetParameter.Iterations) * len(LevelsetParameter.Alphas)
+        * len(LevelsetParameter.Lambdas) * len(LevelsetParameter.Epsilons)
+        * len(LevelsetParameter.Sigmas) + 30
+    )
+
     __levelset_thread = None
 
     def initiarize_results():
@@ -63,7 +70,7 @@ class ACMModel:
         cv2.rectangle(img, start_point, end_point, (255, 0, 0), thickness=1)
         return img
 
-    def acm_snake(img_array):
+    def run_snake(img_array):
         if(not ACMModel.__start_point[0] == ACMModel.__end_point[0]):
             if(not ACMModel.__start_point[1] == ACMModel.__end_point[1]):
                 points = ACM.snake(img_array, ACMModel.__start_point, ACMModel.__end_point)
@@ -71,12 +78,13 @@ class ACMModel:
                 return points
         return points
 
-    def acm_levelset(img_array, callback):
+    def run_levelset(img_array, on_onesteped, on_completed):
         if(not ACMModel.__start_point[0] == ACMModel.__end_point[0]):
             if(not ACMModel.__start_point[1] == ACMModel.__end_point[1]):
                 ACMModel.__levelset_thread = Levelset(img_array,ACMModel.__start_point,ACMModel.__end_point)
-                ACMModel.__levelset_thread.thread.connect(ACMModel.__levelset_calculated)
-                ACMModel.__levelset_thread.finished.connect(callback)
+                ACMModel.__levelset_thread.thread.connect(on_onesteped)
+                ACMModel.__levelset_thread.finished.connect(on_completed)
+                ACMModel.__current_levelset_progress_index = 30
 
                 if not ACMModel.__levelset_thread.isRunning():
                     ACMModel.__levelset_thread.restart()
@@ -84,10 +92,16 @@ class ACMModel:
 
     def cansel_levelset():
         if ACMModel.__levelset_thread != None and ACMModel.__levelset_thread.isRunning():
+            print("end")
+            # 実行中
             ACMModel.__levelset_thread.stop()
             ACMModel.__levelset_thread = None
+        ACMModel.__current_levelset_progress_index = 0
 
-    def __levelset_calculated(json_str):
+    def is_runnnig():
+        return ACMModel.__levelset_thread != None
+
+    def levelset_onesteped(json_str):
         data = json.loads(json_str)
         iteration = data['iteration']
         alpha = data['alpha']
@@ -95,6 +109,7 @@ class ACMModel:
         epsilon = data['epsilon']
         sigma = data['sigma']
         ACMModel.__levelset_results[iteration][alpha][lambda_i][epsilon][sigma] = data['result']
+        ACMModel.__current_levelset_progress_index += 1
 
 
 
@@ -137,8 +152,10 @@ class ACMModel:
         lambda_i    = ACMModel.__current_levelset_parameters_key[2]
         epsilon     = ACMModel.__current_levelset_parameters_key[3]
         sigma       = ACMModel.__current_levelset_parameters_key[4]
-        print(str(iteration)+" "+str(alpha)+" "+str(lambda_i)+" "+str(epsilon)+" "+str(sigma))
         if(len(ACMModel.__levelset_results[iteration][alpha][lambda_i][epsilon][sigma]) > 0):
             return ACMModel.__levelset_results[iteration][alpha][lambda_i][epsilon][sigma]
         else:
             return []
+
+    def get_levelset_progress():
+        return int(ACMModel.__current_levelset_progress_index * 100 / ACMModel.__current_levelset_progress_max)

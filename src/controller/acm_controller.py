@@ -19,8 +19,11 @@ class ACMController:
     __slider_levelset_sigma = None
 
     __button_levelset_ok = None
+    __button_levelset_cansel = None
+    __progress_bar_levelset = None
 
-    __hander_end_levelset = None
+    __hander_completed_levelset = None
+    __hander_onesteped_levelset = None
 
     @staticmethod
     def set_label_levelset_iteration(ui):
@@ -49,10 +52,6 @@ class ACMController:
     def set_label_levelset_sigma(ui):
         ACMController.__label_levelset_sigma = ui
         ACMController.__label_levelset_sigma.setText(str(ACMModel.get_levelset_parameters_value()[4]))
-
-    @staticmethod
-    def set_hander_end_levelset(handler):
-        ACMController.__hander_end_levelset = handler
 
     @staticmethod
     def set_slider_levelset_iteration(slider_levelset_iteration):
@@ -102,6 +101,27 @@ class ACMController:
     @staticmethod
     def set_button_levelset_ok(ui):
         ACMController.__button_levelset_ok = ui
+        ACMController.__button_levelset_ok.setEnabled(False)
+
+    @staticmethod
+    def set_button_levelset_cansel(ui):
+        ACMController.__button_levelset_cansel = ui
+        ACMController.__button_levelset_cansel.setEnabled(False)
+
+    @staticmethod
+    def set_progress_bar_levelset(ui):
+        ACMController.__progress_bar_levelset = ui
+        ACMController.__progress_bar_levelset.setValue(0)
+
+    @staticmethod
+    def set_hander_completed_levelset(handler):
+        ACMController.__hander_completed_levelset = handler
+
+    @staticmethod
+    def set_hander_onesteped_levelset(handler):
+        ACMController.__hander_onesteped_levelset = handler
+
+
 
     @staticmethod
     def change_levelset_parameters():
@@ -136,7 +156,7 @@ class ACMController:
 
     def snake_release(x, y):
         ACMController.snake_drag(x, y)
-        points = ACMModel.acm_snake(ImageModel.get_array_pixel_hist())
+        points = ACMModel.run_snake(ImageModel.get_array_pixel_hist())
         if(len(points)>0):
             LabelModel.regist_writting_label_by_acm(points, LabelModel.generate_label_id(), DicomModel.get_current_index())
         ACMModel.reset_start_point()
@@ -157,7 +177,9 @@ class ACMController:
 
     def levelset_release(x, y):
         ACMController.levelset_drag(x, y)
-        ACMModel.acm_levelset(ImageModel.get_array_pixel_hist(), ACMController.__hander_end_levelset)
+        ACMModel.run_levelset(ImageModel.get_array_pixel_hist(), ACMController.__hander_onesteped_levelset, ACMController.__hander_completed_levelset)
+        ACMController.__button_levelset_cansel.setEnabled(True)
+        ACMController.__progress_bar_levelset.setValue(ACMModel.get_levelset_progress())
         ACMModel.reset_start_point()
         ACMModel.reset_end_point()
 
@@ -165,12 +187,18 @@ class ACMController:
         LabelModel.regist_suspended_label(LabelModel.generate_label_id(), DicomModel.get_current_index())
         LabelModel.reset_suspended_label()
 
-    def levelset_end():
+    def levelset_completed():
         ACMController.__set_levelset_result()
+
+    def levelset_onesteped(json_str):
+        ACMModel.levelset_onesteped(json_str)
+
+    def levelset_cansel():
+        ACMModel.cansel_levelset()
+        LabelModel.reset_suspended_label()
 
     def __set_levelset_result():
         points = ACMModel.get_levelset_result()
-        print(points)
         LabelModel.reset_suspended_label()
         if(len(points)>0):
             LabelModel.add_suspended_label(points, DicomModel.get_current_index())
@@ -180,3 +208,9 @@ class ACMController:
             ACMController.__button_levelset_ok.setEnabled(True)
         else:
             ACMController.__button_levelset_ok.setEnabled(False)
+
+        if(LabelModel.is_suspended_label() or ACMModel.is_runnnig()):
+            ACMController.__button_levelset_cansel.setEnabled(True)
+        else:
+            ACMController.__button_levelset_cansel.setEnabled(True)
+        ACMController.__progress_bar_levelset.setValue(ACMModel.get_levelset_progress())

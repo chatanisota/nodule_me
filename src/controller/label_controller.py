@@ -156,6 +156,10 @@ class LabelController:
         return LabelModel.is_writting_labels()
 
     @staticmethod
+    def writting_cansel():
+        LabelModel.reset_writting_label()
+
+    @staticmethod
     def regist_writting_labels():
         LabelModel.regist_writting_labels(LabelController.__get_nodule_id(), LabelController.__get_malignant_level(), LabelController.__get_comments(), UserModel.get_current_user_id())
 
