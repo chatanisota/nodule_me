@@ -1,6 +1,6 @@
 Release note
 
-1.1 
+1.1
 
 1.2 add writing label
 
@@ -12,3 +12,6 @@ fix bugs at ACM and change parameter
 
 1.8 2020 06 03
 improve speed of labeling and fix that DIRFILE.dcm is not read.
+
+2.0 2022 03 22
+add LSM
